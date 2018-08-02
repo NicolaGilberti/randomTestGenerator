@@ -1,0 +1,14 @@
+\chapter{Chapter 2 name}\label{ch:ch2label}
+Here is chapter 2. If you want to leearn \todo{I think this word is mispelled} more about \LaTeXe{}, have a look at \cite{Madsen2010}, \cite{Oetiker2010} and \cite{Mittelbach2005}.
+\missingfigure{We need a figure right here!}
+
+\lstset{language=Java}          % Set your language (you can change the language for each code-block optionally)
+\begin{lstlisting}[caption={Testing how to print code!}]  % Start your code-block
+File root2 = new File(filePath);
+File sourceFile2 = new File(root2, fileName+"Instr.java");
+Files.write(sourceFile2.toPath(), k.getBytes(StandardCharsets.UTF_8));
+
+String[] source = { "-d",destDirectory,"-cp",".;"+classpath,new String(filePath + "/" + fileName + "Instr.java")};
+ByteArrayOutputStream baos= new ByteArrayOutputStream();
+com.sun.tools.javac.Main.compile(source);
+\end{lstlisting}
