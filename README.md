@@ -10,8 +10,8 @@
 4. remove/move etc -> they must not exist inside the project dir before the execution of the Maven commands
 
 # To run the project
-In general:	mvn exec:java -Dexec.mainClass="primary.MainProgram"
-On Windows:	mvn exec:java -D"exec.mainClass"="primary.MainProgram"
+In general:	mvn exec:java -Dexec.mainClass="primary.MainProgram" \
+On Windows:	mvn exec:java -D"exec.mainClass"="primary.MainProgram" \
 Another option:	java -jar target/fileName.jar
 #### Requirements
 1. fill the .properties file with the proper values 
