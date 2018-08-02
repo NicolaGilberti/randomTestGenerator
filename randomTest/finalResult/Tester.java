@@ -5,73 +5,57 @@ import java.util.Timer;
 public class Tester{
 
 	@Test
-	//test case 0 coverage: 0.6666666666666666
-	//branch covered: [0, 1, 2, 5]
+	//test case 0 coverage: 0.8333333333333334
+	//branch covered: [0, 1, 3, 4, 5]
 	public void test0(){
 	Class0Instr obj = new Class0Instr();
 
 		String var110 = "test";
-		int var111 = 1602437499;
+		int var111 = 1445628440;
 		boolean var112 = true;
 	obj.testMe_Pt2(var110,var111,var112);
 
 		String var210 = var110;
 		double var211 = 0.5;
-		boolean var212 = var112;
-			boolean var220 = var112;
-		Timer var213 = new Timer(var220);
+		boolean var212 = false;
+			String var220 = "nCdkU2Ciy3";
+			boolean var221 = var212;
+		Timer var213 = new Timer(var220,var221);
 	obj.testMe(var210,var211,var212,var213);
 
-		String var310 = "Y5s5SLGpVJ0uVT";
+		String var310 = var110;
 		int var311 = var111;
-		boolean var312 = var112;
+		boolean var312 = true;
 	obj.testMe_Pt2(var310,var311,var312);
 
-		String var410 = "1Onal8QKCUN";
+		String var410 = var220;
 		int var411 = var111;
-		boolean var412 = true;
+		boolean var412 = false;
 	obj.testMe_Pt2(var410,var411,var412);
-
-		String var510 = var310;
-		int var511 = 628587349;
-		boolean var512 = true;
-	obj.testMe_Pt2(var510,var511,var512);
-
-		String var610 = var310;
-		int var611 = var111;
-		boolean var612 = true;
-	obj.testMe_Pt2(var610,var611,var612);
 
 	}
 	@Test
-	//test case 1 coverage: 0.3333333333333333
-	//branch covered: [3, 4]
+	//test case 1 coverage: 0.16666666666666666
+	//branch covered: [2]
 	public void test1(){
 	Class0Instr obj = new Class0Instr();
 
-		String var110 = "5xEDCB";
-		double var111 = 0.2821930250452097;
+		String var110 = "Wpc";
+		double var111 = 0.5;
 		boolean var112 = true;
-			boolean var120 = var112;
+			String var120 = var110;
 		Timer var113 = new Timer(var120);
 	obj.testMe(var110,var111,var112,var113);
 
 		String var210 = var110;
-		int var211 = 946119194;
-		boolean var212 = false;
+		int var211 = 2126536601;
+		boolean var212 = true;
 	obj.testMe_Pt2(var210,var211,var212);
 
-		String var310 = var110;
-		int var311 = 390931433;
-		boolean var312 = true;
+		String var310 = "";
+		int var311 = 329060016;
+		boolean var312 = var212;
 	obj.testMe_Pt2(var310,var311,var312);
-
-		String var410 = "R6k2mXLSZ5";
-		double var411 = 0.5;
-		boolean var412 = var312;
-			String var420 = "test";
-		Timer var413 = new Timer(var420);
-	obj.testMe(var410,var411,var412,var413);
 
 	}
 }

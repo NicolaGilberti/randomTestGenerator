@@ -15,8 +15,8 @@ import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
 
 public class ClassModifier {
 
-	public static final String DEFAULT_MODEL_BIN_DIR = "spoon/bin";
-	public static final String DEFAULT_MODEL_SRC_DIR = "spoon/src";
+	private String DEFAULT_MODEL_BIN_DIR = "spoon/bin";
+	private String DEFAULT_MODEL_SRC_DIR = "spoon/src";
 	private Factory factory;
 	private String modelBinDir = DEFAULT_MODEL_BIN_DIR;
 	private String modelSrcDir = DEFAULT_MODEL_SRC_DIR;
@@ -120,8 +120,8 @@ public class ClassModifier {
 		JavaOutputProcessor fileOutput = new JavaOutputProcessor(new DefaultJavaPrettyPrinter(getFactory().getEnvironment()));
 
 		fileOutput.getPrinter();
-		launcher.setBinaryOutputDirectory(new File(DEFAULT_MODEL_BIN_DIR));
-		launcher.setSourceOutputDirectory(new File(DEFAULT_MODEL_SRC_DIR));
+		launcher.setBinaryOutputDirectory(new File(modelBinDir));
+		launcher.setSourceOutputDirectory(new File(modelSrcDir));
 		fileOutput.setFactory(getFactory());
 		fileOutput.init();
 		for (CtType<?> type : getFactory().Class().getAll()) {

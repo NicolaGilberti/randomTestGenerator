@@ -49,6 +49,8 @@ public class SecThread extends Thread {
 		filePath = fp;
 		maxNumMethods = mnm-2;
 		loader = new ClassModifier();
+		loader.setModelSrcDir("spoon");
+		loader.setModelBinDir(dd);
 		classpath = cp;
 		destDirectory = dd;
 		sm = new SpoonMod();
@@ -59,14 +61,24 @@ public class SecThread extends Thread {
 		// TODO Auto-generated method stub
 		//System.out.println("Starting thread: "+this.name);
 		super.run();
+		
+		File root3 = new File(this.filePath);
+		File sourceFile3 = new File(root3, fileName+".java");
+
+		String [] source = { "-d",destDirectory,"-cp",".;"+classpath,new String(filePath + "/" + fileName + ".java")};
+		ByteArrayOutputStream baos= new ByteArrayOutputStream();
+		com.sun.tools.javac.Main.compile(source);
+
+		while(!(baos.toString().indexOf("error")==-1)) {}
+		
 		instantiateInstrumentedClass();
 		modifiedClass = loader.load(fileName+"Instr");
 
 		/**
 		 * find all the import
 		 */
-		File root = new File(ClassModifier.DEFAULT_MODEL_SRC_DIR);
-		File sourceFile = new File(root, fileName+"Instr.java");
+		File root = new File(loader.getModelSrcDir());
+		File sourceFile = new File(root, fileName+".java");
 		List<String> ls=null;
 		try {
 			ls = Files.readAllLines(sourceFile.toPath(), Charset.defaultCharset());
@@ -105,9 +117,8 @@ public class SecThread extends Thread {
 		Method methodC=null;
 		Method methodS=null;
 
-		boolean removed=false;
 		int y=0,w=0;
-		while(!removed && y<list.length) {
+		while(y<list.length) {
 			if(list[y].getName().equals("getChecker")) {
 				methodC = list[y];
 			}else if(list[y].getName().equals("setChecker")) {
@@ -190,7 +201,6 @@ public class SecThread extends Thread {
 					}
 				}
 				test.setMethodList(mListTemp);
-
 				//get the arrayList value for the branch coverage
 				Class<?>[] parametersC = methodC.getParameterTypes();
 				Object[] tmpC = new Object[parametersC.length];
@@ -238,7 +248,7 @@ public class SecThread extends Thread {
 			nBranch = sm.modify(classToLoad, f);
 			loader.compile();
 
-			File root = new File("./spoon/src");
+			File root = new File(loader.getModelSrcDir());
 			File sourceFile = new File(root, fileName+".java");
 			String k="";
 			List<String> ls = Files.readAllLines(sourceFile.toPath(), Charset.defaultCharset());

@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import support.test.TestCase;
 import support.test.TestCaseGenerator;
@@ -16,7 +18,7 @@ public class MainProgram {
 	private static long testTimer;//millisecond
 	private static String fileName;
 	private static String filePath;
-	private static String destDirectory;
+	private static String destDirectory = "target\\classes";
 	private static String classpath;
 	private static String outputDir;
 	private static int maxNum;
@@ -24,7 +26,19 @@ public class MainProgram {
 	
 	protected static boolean threadAlive = true;
 
-	@SuppressWarnings("deprecation")
+
+	public static void main2(String[] args) {
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+
+        URL[] urls = ((URLClassLoader)cl).getURLs();
+
+    	System.out.println("boiacan del dio porco!\n");
+        for(URL url: urls){
+        	System.out.println(url.getFile()+"\n");
+        }
+    	System.out.println("la dea puttana!\n");
+	}
+	
 	public static void main(String[] args){
 		finalTests = new ArrayList<TestCase>();
 
@@ -39,7 +53,6 @@ public class MainProgram {
 		fileName = appProps.getProperty("FileName");
 		filePath = appProps.getProperty("FilePath");
 		maxNum = Integer.parseInt(appProps.getProperty("MaxNumberOfMethodXTest"));
-		destDirectory = appProps.getProperty("DestDirectory","target\\classes");
 		classpath = appProps.getProperty("Classpath","");
 		outputDir = appProps.getProperty("OutputDir","finalResult");
 
