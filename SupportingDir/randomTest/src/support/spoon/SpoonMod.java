@@ -1,17 +1,31 @@
 package support.spoon;
 
-import java.util.*;
-import spoon.reflect.code.*;
-import spoon.reflect.declaration.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import spoon.reflect.code.CtBlock;
+import spoon.reflect.code.CtCodeSnippetStatement;
+import spoon.reflect.code.CtExpression;
+import spoon.reflect.code.CtIf;
+import spoon.reflect.code.CtLiteral;
+import spoon.reflect.code.CtStatement;
+import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtConstructor;
+import spoon.reflect.declaration.CtExecutable;
+import spoon.reflect.declaration.CtField;
+import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.CtParameter;
+import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.filter.TypeFilter;
-
 import support.generator.Instantiator;
-import support.generator.RandomGenerator;
 import support.generator.MapValue;
 
-public final class SpoonMod {
+public class SpoonMod {
 	static int counter = 0;
 	private static List<?> tmp;
 	private static List<?> tmp2;
@@ -24,7 +38,7 @@ public final class SpoonMod {
 	 * @param factory spoon element required to modify class
 	 * @return the number of branch founded during the instrumentation
 	 */
-	public static <T> int modify(Class<?> inputClass, Factory factory) {
+	public <T> int modify(Class<?> inputClass, Factory factory) {
 		// TODO Auto-generated method stub
 		cc = (CtClass<?>) factory.Class().get(inputClass);
 		CtMethod<?> method;
@@ -98,8 +112,9 @@ public final class SpoonMod {
 	 * @param statements the list of element to analyze
 	 * @param factory spoon element required to modify class
 	 */
-	public static void visitIfTree(List<CtStatement> statements, Factory factory) {
+	public void visitIfTree(List<CtStatement> statements, Factory factory) {
 		Iterator<CtStatement> x = statements.iterator();
+		ArrayList<CtIf> noElseBlock = new ArrayList<CtIf>();
 		while(x.hasNext()) {
 			CtStatement o = x.next();
 			if(o instanceof CtIf) {
@@ -128,15 +143,22 @@ public final class SpoonMod {
 						newStatements.add((CtStatement) tmp2.get(j));
 					}
 					((CtBlock<?>)cts2).setStatements(newStatements);
+				}else{
+					noElseBlock.add(ctIf);
 				}
 			}
+		}
+
+		for(CtIf ctIf : noElseBlock) {
+			CtCodeSnippetStatement newStatement = factory.Code().createCodeSnippetStatement("checker.add("+counter++ +")");
+			ctIf.insertAfter(newStatement);
 		}
 	}
 
 	/**
 	 * this method find all the fields inside the class and set the map in support.generator.RandomGenerator with those values
 	 */
-	public static void findVar(Instantiator inst) {
+	public void findVar(Instantiator inst) {
 		TypeFilter typeFilter = new TypeFilter(CtField.class);
 		List elements1 = cc.getElements(typeFilter);
 		ArrayList values = new ArrayList();

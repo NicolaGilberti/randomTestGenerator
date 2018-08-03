@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import support.test.TestCase;
 import support.test.TestCaseGenerator;
@@ -16,15 +18,14 @@ public class MainProgram {
 	private static long testTimer;//millisecond
 	private static String fileName;
 	private static String filePath;
-	private static String destDirectory;
+	private static String destDirectory = "target\\classes";
 	private static String classpath;
 	private static String outputDir;
 	private static int maxNum;
 	private static String appConfigPath = "program.properties";
 	
 	protected static boolean threadAlive = true;
-
-	@SuppressWarnings("deprecation")
+	
 	public static void main(String[] args){
 		finalTests = new ArrayList<TestCase>();
 
@@ -39,7 +40,6 @@ public class MainProgram {
 		fileName = appProps.getProperty("FileName");
 		filePath = appProps.getProperty("FilePath");
 		maxNum = Integer.parseInt(appProps.getProperty("MaxNumberOfMethodXTest"));
-		destDirectory = appProps.getProperty("DestDirectory","bin");
 		classpath = appProps.getProperty("Classpath","");
 		outputDir = appProps.getProperty("OutputDir","finalResult");
 
@@ -83,6 +83,8 @@ public class MainProgram {
 		tCG.setImportList(importString);
 		tCG.setTestList(finalTests);
 		tCG.GenerateTestCaseFile();
+		
+		showTestCoverage(finalTests);
 
 		System.exit(0);
 	}
@@ -127,7 +129,7 @@ public class MainProgram {
 				TestCase oldTest = finalTests.get(i);
 				if(sameValues(oldTest.getBranchCovered(), newTest.getBranchCovered())) {
 					flag=false;
-					if(oldTest.getMethodList().size()>newTest.getMethodList().size()) {/////sto prendendo i più grandi per test usando il <
+					if(oldTest.getMethodList().size()>newTest.getMethodList().size()) {/////sto prendendo i piu grandi per test usando il <
 						finalTests.set(i, newTest);
 					}else if(oldTest.getMethodList().size() == newTest.getMethodList().size() && (new Random()).nextInt(10)%2==0) {
 						finalTests.set(i, newTest);
@@ -206,5 +208,20 @@ public class MainProgram {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Print in console (System.out "standard") 
+	 * the coverage performed by the list of TestCase
+	 * 
+	 * @param ft ArrayList of the tests 
+	 */
+	public static void showTestCoverage(ArrayList<TestCase> ft) {
+		int den = ft.get(0).getnBranch();
+		HashSet<Integer> num = new HashSet<Integer>();
+		for(TestCase t : ft) {
+			num.addAll(t.getBranchCovered());
+		}
+		System.out.println("Total coverage of the tests is => " + num.size()*1.0/den*1.0);
 	}
 }

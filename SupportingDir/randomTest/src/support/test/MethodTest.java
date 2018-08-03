@@ -20,6 +20,21 @@ public class MethodTest {
 		this.setException(null);
 	}
 
+
+	/**
+	 * @return the method
+	 */
+	public String getParameterUsed() {
+		return parameterUsed;
+	}
+
+	/**
+	 * @param method the method to set
+	 */
+	public void setMethod(String parameterUsed) {
+		this.parameterUsed = parameterUsed;
+	}
+	
 	/**
 	 * @return the method
 	 */
@@ -88,11 +103,12 @@ public class MethodTest {
 			tab += "\t";
 			exactMatch++;
 		}
-		String[] res = param.trim().split("§@{"+(exactMatch)+"}§");
+		String[] res = param.trim().split("#@{"+(exactMatch)+"}#");
 		for(int qwe=1; qwe<res.length; qwe++) {
 			String token = res[qwe];
-			if(token.contains("§")) {
+			if(token.contains("#")) {
 				Object[] obj = this.levelVisitor(token, lvl+1, u);
+				System.err.println("param: " + param);
 				s += obj[0];
 				int max = token.indexOf(':');
 				String variables="";
@@ -143,7 +159,6 @@ public class MethodTest {
 						if(claz.toLowerCase().contains("long")) {
 							value += "L";
 						}
-						
 						if(value.contains(claz) && !value.contains("("+claz+")")) {	
 							s+= clazz + " var" + u + lvl + counter++ + " = new " + clazz + "();\n";
 						}else if(!value.equals("")){
@@ -163,7 +178,7 @@ public class MethodTest {
 	 */
 	public String toString(int u) {
 		String s = "";
-
+		
 		Object[] k = this.levelVisitor(this.parameterUsed,1,u);
 		s = (String)k[0];
 		String something = "";

@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="testToCheckFolder"/>
 	<classpathentry kind="src" path="finalResult"/>
-	<classpathentry kind="lib" path="D:/eclipse/eclipse/Workspace/randomTestGenerator/randomTest/spoon-core-6.2.0-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/eclipse/Workspace/randomTestGenerator/SupportingDir/randomTest/spoon-core-6.2.0-jar-with-dependencies.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="C:/Program Files/Java/jdk1.8.0_181/lib/tools.jar"/>
 	<classpathentry kind="output" path="bin"/>

@@ -79,11 +79,11 @@ public class Instantiator {
 		Object[] req = null;
 		for(int i=0;i<obj.length;i++){
 			//to define different levels (to find token during the string elaboration)
-			s+="§";
+			s+="#";
 			for(int q=0 ; q<=lvl; q++) {
 				s += "@";
 			}
-			s+="§";
+			s+="#";
 
 			try {
 				MapValue mV;

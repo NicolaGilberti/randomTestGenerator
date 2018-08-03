@@ -12,10 +12,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
+import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
-import spoon.reflect.factory.Factory;
 
+import spoon.reflect.factory.Factory;
 import support.generator.Instantiator;
 import support.generator.ParamSaver;
 import support.spoon.ClassModifier;
@@ -39,6 +39,7 @@ public class SecThread extends Thread {
 	private int maxNumMethods;
 	private ClassModifier loader;
 	private String importString;
+	private SpoonMod sm;
 
 
 	public SecThread(String name, LinkedBlockingQueue<TestCase> c, long time, String fn, String fp, int mnm, String cp, String dd) {
@@ -48,8 +49,11 @@ public class SecThread extends Thread {
 		filePath = fp;
 		maxNumMethods = mnm-2;
 		loader = new ClassModifier();
+		loader.setModelSrcDir("spoon");
+		loader.setModelBinDir(dd);
 		classpath = cp;
 		destDirectory = dd;
+		sm = new SpoonMod();
 	}
 
 	@Override
@@ -57,14 +61,24 @@ public class SecThread extends Thread {
 		// TODO Auto-generated method stub
 		//System.out.println("Starting thread: "+this.name);
 		super.run();
+		
+		File root3 = new File(this.filePath);
+		File sourceFile3 = new File(root3, fileName+".java");
+
+		String [] source = { "-d",destDirectory,"-cp",".;"+classpath,new String(filePath + "/" + fileName + ".java")};
+		ByteArrayOutputStream baos= new ByteArrayOutputStream();
+		com.sun.tools.javac.Main.compile(source);
+
+		while(!(baos.toString().indexOf("error")==-1)) {}
+		
 		instantiateInstrumentedClass();
 		modifiedClass = loader.load(fileName+"Instr");
 
 		/**
 		 * find all the import
 		 */
-		File root = new File(ClassModifier.DEFAULT_MODEL_SRC_DIR);
-		File sourceFile = new File(root, fileName+"Instr.java");
+		File root = new File(loader.getModelSrcDir());
+		File sourceFile = new File(root, fileName+".java");
 		List<String> ls=null;
 		try {
 			ls = Files.readAllLines(sourceFile.toPath(), Charset.defaultCharset());
@@ -96,16 +110,15 @@ public class SecThread extends Thread {
 	public void testMethods() {
 		TestCase test = new TestCase(id++,nBranch);
 		Instantiator inst = test.getInst();
-		SpoonMod.findVar(inst);
+		sm.findVar(inst);
 		Method method=null;
 		Method[] list=modifiedClass.getDeclaredMethods();
 		Method[] listM = new Method[list.length-2];
 		Method methodC=null;
 		Method methodS=null;
 
-		boolean removed=false;
 		int y=0,w=0;
-		while(!removed && y<list.length) {
+		while(y<list.length) {
 			if(list[y].getName().equals("getChecker")) {
 				methodC = list[y];
 			}else if(list[y].getName().equals("setChecker")) {
@@ -188,7 +201,6 @@ public class SecThread extends Thread {
 					}
 				}
 				test.setMethodList(mListTemp);
-
 				//get the arrayList value for the branch coverage
 				Class<?>[] parametersC = methodC.getParameterTypes();
 				Object[] tmpC = new Object[parametersC.length];
@@ -233,10 +245,10 @@ public class SecThread extends Thread {
 			Class<?> classToLoad = loader.load(fileName);
 
 			Factory f = loader.getFactory();
-			nBranch = SpoonMod.modify(classToLoad, f);
+			nBranch = sm.modify(classToLoad, f);
 			loader.compile();
 
-			File root = new File("./spoon/src");
+			File root = new File(loader.getModelSrcDir());
 			File sourceFile = new File(root, fileName+".java");
 			String k="";
 			List<String> ls = Files.readAllLines(sourceFile.toPath(), Charset.defaultCharset());
@@ -287,7 +299,7 @@ public class SecThread extends Thread {
 	}
 
 	/**
-	 * Implementing Fisher–Yates shuffle
+	 * Implementing Fisher Yates shuffle
 	 * 
 	 * @param ar array to shuffle
 	 */

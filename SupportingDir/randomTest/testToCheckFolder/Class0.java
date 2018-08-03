@@ -33,7 +33,9 @@ public class Class0{
 	
 	public void testMe_Pt2(String s, int i, boolean b){
 		if(!s.equals(i)) {
+			System.out.println("Son diversi!");
 			if(!b) {
+				System.out.println("falzo!");
 				
 			}
 		}
