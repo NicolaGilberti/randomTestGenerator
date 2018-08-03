@@ -114,6 +114,7 @@ public class SpoonMod {
 	 */
 	public void visitIfTree(List<CtStatement> statements, Factory factory) {
 		Iterator<CtStatement> x = statements.iterator();
+		ArrayList<CtIf> noElseBlock = new ArrayList<CtIf>();
 		while(x.hasNext()) {
 			CtStatement o = x.next();
 			if(o instanceof CtIf) {
@@ -142,8 +143,15 @@ public class SpoonMod {
 						newStatements.add((CtStatement) tmp2.get(j));
 					}
 					((CtBlock<?>)cts2).setStatements(newStatements);
+				}else{
+					noElseBlock.add(ctIf);
 				}
 			}
+		}
+
+		for(CtIf ctIf : noElseBlock) {
+			CtCodeSnippetStatement newStatement = factory.Code().createCodeSnippetStatement("checker.add("+counter++ +")");
+			ctIf.insertAfter(newStatement);
 		}
 	}
 

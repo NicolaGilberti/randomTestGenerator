@@ -108,7 +108,6 @@ public class MethodTest {
 			String token = res[qwe];
 			if(token.contains("#")) {
 				Object[] obj = this.levelVisitor(token, lvl+1, u);
-				System.err.println("param: " + param);
 				s += obj[0];
 				int max = token.indexOf(':');
 				String variables="";

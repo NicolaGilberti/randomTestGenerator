@@ -9,6 +9,8 @@ import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.net.URL;
 import java.net.URLClassLoader;
+import org.apache.commons.io.FileUtils;
+import java.io.File;
 
 import support.test.TestCase;
 import support.test.TestCaseGenerator;
@@ -25,19 +27,6 @@ public class MainProgram {
 	private static String appConfigPath = "program.properties";
 	
 	protected static boolean threadAlive = true;
-
-
-	public static void main2(String[] args) {
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
-
-        URL[] urls = ((URLClassLoader)cl).getURLs();
-
-    	System.out.println("boiacan del dio porco!\n");
-        for(URL url: urls){
-        	System.out.println(url.getFile()+"\n");
-        }
-    	System.out.println("la dea puttana!\n");
-	}
 	
 	public static void main(String[] args){
 		finalTests = new ArrayList<TestCase>();
@@ -96,7 +85,14 @@ public class MainProgram {
 		tCG.setImportList(importString);
 		tCG.setTestList(finalTests);
 		tCG.GenerateTestCaseFile();
+		
+		showTestCoverage(finalTests);
 
+		try {
+			FileUtils.deleteDirectory(new File("spoon"));
+		}catch(Exception e) {
+			System.err.println("error removing tempor spoon dir " + e);
+		}
 		System.exit(0);
 	}
 
@@ -219,5 +215,20 @@ public class MainProgram {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Print in console (System.out "standard") 
+	 * the coverage performed by the list of TestCase
+	 * 
+	 * @param ft ArrayList of the tests 
+	 */
+	public static void showTestCoverage(ArrayList<TestCase> ft) {
+		int den = ft.get(0).getnBranch();
+		HashSet<Integer> num = new HashSet<Integer>();
+		for(TestCase t : ft) {
+			num.addAll(t.getBranchCovered());
+		}
+		System.out.println("Total coverage of the tests is => " + num.size()*1.0/den*1.0);
 	}
 }

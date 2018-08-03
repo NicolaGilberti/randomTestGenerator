@@ -4,10 +4,9 @@
 1. mvn clean
 2. mvn compile assembly:single
 #### Requirements
-1. if exist, remove the 'spoon' directory
-2. if the class analysed before is inside the project directory, delete it
-3. if exist, remove the older test file
-4. remove/move etc -> they must not exist inside the project dir before the execution of the Maven commands
+1. if the class analysed before is inside the project directory, delete it
+2. if exist, remove the older test file
+3. remove/move etc -> they must not exist inside the project dir before the execution of the Maven commands
 
 # To run the project
 In general:	mvn exec:java -Dexec.mainClass="primary.MainProgram" \
