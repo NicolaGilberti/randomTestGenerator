@@ -23,20 +23,19 @@
 \pagestyle{empty} %disable headers and footers
 \pagenumbering{roman} %use roman page numbering in the frontmatter
 \input{sections/frontpage.tex}
-\cleardoublepage
 \pdfbookmark[0]{Contents}{label:contents}
 \pagestyle{fancy} %enable headers and footers again
 \tableofcontents
-%\listoftodos
 \input{sections/preface.tex}
 \cleardoublepage
 %mainmatter
 \pagenumbering{arabic} %use arabic page numbering in the mainmatter
 \input{sections/introduction.tex}
-\input{sections/ch2name.tex}
+\input{sections/algorithm.tex}
+\input{sections/usage.tex}
 \input{sections/conclusion.tex}
-\printbibliography[heading=bibintoc]
+\bibliography{bib/mybib}
 \label{bib:mybiblio}
 \appendix
-\input{sections/appAname.tex}
+\input{sections/appendixA.tex}
 \end{document}

@@ -90,7 +90,8 @@
 % Modify how \chapter, \section, etc. look
 % The titlesec package is very configureable
 \usepackage{titlesec}
-\titleformat{\chapter}[display]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat{\chapter}[block]{\normalfont\huge\bfseries}{\thechapter.}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{0pt}{30pt}
 \titleformat*{\section}{\normalfont\Large\bfseries}
 \titleformat*{\subsection}{\normalfont\large\bfseries}
 \titleformat*{\subsubsection}{\normalfont\normalsize\bfseries}
@@ -110,9 +111,9 @@
 \pagestyle{fancy}
 \fancyhf{} %delete everything
 \renewcommand{\headrulewidth}{0pt} %remove the horizontal line in the header
-\fancyhead[RE]{\small\nouppercase\leftmark} %even page - chapter title
+%\fancyhead[RE]{\small\nouppercase\leftmark} %even page - chapter title
 \fancyhead[LO]{\small\nouppercase\rightmark} %uneven page - section title
-\fancyhead[LE,RO]{\thepage} %page number on all pages
+%\fancyhead[LE,RO]{\thepage} %page number on all pages
 % Do not stretch the content of a page. Instead,
 % insert white space at the bottom of the page
 \raggedbottom
@@ -124,10 +125,11 @@
 % Bibliography
 % http://en.wikibooks.org/wiki/LaTeX/Bibliography_Management
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage[backend=bibtex,
-  bibencoding=utf8
-  ]{biblatex}
-\addbibresource{bib/mybib}
+%\usepackage[backend=bibtex,
+%  bibencoding=utf8
+%  ]{biblatex}
+%\addbibresource{bib/mybib}
+\bibliographystyle{ieeetr}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Misc
@@ -209,6 +211,11 @@
 	tabsize=4,
 	showstringspaces=false,
 	numbers=left,
-	emph={int,char,double,float,unsigned,void,bool,String,File,Files,ByteArrayOutputStream,StandardCharsets},
+	emph={int,char,double,float,unsigned,void,bool,String,File,Files,ByteArrayOutputStream,StandardCharsets,CtCodeSnippetStatement,CtCodeSnippetStatement,CtBlock,Factory},
 	emphstyle={\color{blue!60!green}}
 }
+
+%for the style, to avoid last sentence broken between two pages
+%\widowpenalty=10000 
+%\clubpenalty=10000 
+%\raggedbottom
