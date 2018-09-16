@@ -161,7 +161,17 @@ public class MethodTest {
 						if(value.contains(claz) && !value.contains("("+claz+")")) {	
 							s+= clazz + " var" + u + lvl + counter++ + " = new " + clazz + "();\n";
 						}else if(!value.equals("")){
-							s+= clazz + " var" + u + lvl + counter++ + " = " + value + ";\n";
+							if(clazGen[0].equals("enum")) {
+								String clazzz = "";
+								for(int qwer=1; qwer<clazGen.length-1; qwer++) {
+									clazzz += clazGen[qwer] + ".";
+								}
+								s+= clazzz + clazz + " var" + u + lvl + counter++ + " = " + value + ";\n";
+								
+							}
+							else {
+								s+= clazz + " var" + u + lvl + counter++ + " = " + value + ";\n";
+							}
 						}
 					}
 				}

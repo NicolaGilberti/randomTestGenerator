@@ -3,6 +3,7 @@ package support.generator;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -44,7 +45,7 @@ public class Instantiator {
 		}
 		return value;
 	}
-	
+
 	/**
 	 * to get a value from the map
 	 * in case of not presence, the input is returned
@@ -88,10 +89,17 @@ public class Instantiator {
 			try {
 				MapValue mV;
 				temp = getType(parameters[i].getName()); 
+				String clazNameTmp = parameters[i].getName();
+				if(parameters[i].isEnum()) {
+					clazNameTmp="enum";
+				}
+				else {
+					//On the enum we cannot put this value like in the other cases because in the name there is a not accepted symbol
+					s += parameters[i].getName() + ":";
+				}
 				random = new Random();
 				target = Class.forName(temp);
-				s += parameters[i].getName() + ":";
-				switch (parameters[i].getName()){
+				switch (clazNameTmp){
 				case "boolean":
 					obj[i] = Class.forName(temp).getConstructor(boolean.class).newInstance(true);
 					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i));
@@ -140,6 +148,47 @@ public class Instantiator {
 					obj[i] = mV.getValue();
 					s += mV;
 					break;
+				case "enum":
+					String[] x = temp.split("\\$");
+					if(x.length>=2) {
+						String[] enumRootClass = Arrays.copyOf(x, x.length-1);
+						String enumClassName = x[x.length-1];
+						String enumRootClassStr = "";
+						for(int qwer=0; qwer<enumRootClass.length; qwer++) {
+							enumRootClassStr += enumRootClass[qwer] + ".";
+						}
+						if(!rG.map.containsKey(temp) || random.nextInt(5)>=3) {
+							Object[] enumOptions = parameters[i].getEnumConstants();
+							int enumOptionsLenght = enumOptions.length;
+							Object value = enumOptions[random.nextInt(enumOptionsLenght)];
+							mV = new MapValue(value,u,lvl,i);
+							if(rG.map.containsKey(temp)){
+								rG.addToMap(mV);
+							}else {
+								ArrayList<MapValue> valuez = new ArrayList<MapValue>();
+								valuez.add(mV);
+								rG.map.put(temp, valuez);
+							}
+						}else {
+							//old value
+							ArrayList<MapValue> value = rG.map.get(temp);
+							int valueSize = value.size();
+							int tempVal = random.nextInt(valueSize);
+							MapValue nmv= value.get(tempVal);
+							if(nmv.getMethodNumber()==-1 && nmv.getLvlNumber()==-1 && nmv.getCounterNumber()==-1) {
+								value.remove(nmv);
+							}
+							mV = new MapValue(nmv.getValue(),u,lvl,i);
+							rG.addToMap(mV);
+						}
+						obj[i] = mV.getValue();
+						mV.setValue(enumClassName + "." + mV.getValue().toString());
+						s += "enum." + enumRootClassStr + enumClassName + ":" + mV;
+					} 
+					else{
+						System.err.println("Enum creation error, unknown name collected"); 
+					}
+					break;
 				default:
 					/**
 					 * it seems a bit long, but there are only 2 branch after this comment:
@@ -148,7 +197,7 @@ public class Instantiator {
 					 * 2. RandomGenerator KNOW this object class and randomicity let to choose an old instance
 					 * 
 					 * first branch has two option but they differ only on the last part, where the first update the map with the new value,
-					 * while the second insert the new class into the RangomGenerator map
+					 * while the second insert the new class into the RandomGenerator map
 					 * 
 					 */
 					if(!rG.map.containsKey(temp) || random.nextBoolean()) {

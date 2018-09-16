@@ -261,6 +261,7 @@ public class SecThread extends Thread {
 			k = k.replaceAll("\\Q"+fileName+"<\\E",fileName+"Instr<");
 			k = k.replaceAll("\\Q"+fileName+"(\\E",fileName+"Instr(");
 			k = k.replaceAll("\\Q"+fileName+"{\\E",fileName+"Instr{");
+			k = k.replaceAll("\\Q"+fileName+".\\E",fileName+"Instr.");
 
 			File root2 = new File(filePath);
 			File sourceFile2 = new File(root2, fileName+"Instr.java");

@@ -17,6 +17,7 @@ import spoon.reflect.declaration.CtConstructor;
 import spoon.reflect.declaration.CtExecutable;
 import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.CtEnum;
 import spoon.reflect.declaration.CtParameter;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.factory.Factory;
@@ -172,18 +173,24 @@ public class SpoonMod {
 			}
 		}
 		for(int i=0;i<values.size();i++) {
-			CtLiteral temp = (CtLiteral) values.get(i);
-			if(temp.getType().getPackage()==null) {
-				//System.out.println(temp.getType());
-				valClass = inst.getType(temp.getType().toString());
+			if(values.get(i) instanceof CtLiteral) {
+				CtLiteral temp = (CtLiteral) values.get(i);
+				if(temp.getType().getPackage()==null) {
+					//System.out.println(temp.getType());
+					valClass = inst.getType(temp.getType().toString());
+				}else {
+					String s = temp.getType().getPackage() + "." + temp.getType();
+					//System.out.println(s);
+					valClass = inst.getType(s);
+				}
+				value = ((CtLiteral) values.get(i)).getValue();
+				//System.out.println("\t" + value);
+				inst.getrG().addToMap(new MapValue(value,-1,-1,-1));
 			}else {
-				String s = temp.getType().getPackage() + "." + temp.getType();
-				//System.out.println(s);
-				valClass = inst.getType(s);
+				//manage enum
 			}
-			value = ((CtLiteral) values.get(i)).getValue();
-			//System.out.println("\t" + value);
-			inst.getrG().addToMap(new MapValue(value,-1,-1,-1));
+			
+			
 		}
 	}
 }
