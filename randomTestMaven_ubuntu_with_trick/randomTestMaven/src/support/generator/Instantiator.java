@@ -187,9 +187,11 @@ public class Instantiator {
 					//try {
 					target = Class.forName(temp);
 					/*}catch(ClassNotFoundException c) {
-						//c.printStackTrace();
-					}*/
-					//System.out.println("class: " + temp);
+						c.printStackTrace();
+						target = Class.forName("Id");
+						temp= "Id";
+					}
+					System.out.println("class: " + temp);*/
 					
 					/**
 					 * it seems a bit long, but there are only 2 branch after this comment:
@@ -286,19 +288,5 @@ public class Instantiator {
 	 */
 	public void setrG(RandomGenerator rG) {
 		this.rG = rG;
-	}
-	
-	/**
-	 * @return 
-	 */
-	public String getClassPath() {
-		return this.classPath;
-	}
-
-	/**
-	 * @param 
-	 */
-	public void setClassPath(String cp) {
-		this.classPath = cp;
 	}
 }

@@ -6,13 +6,13 @@ public class Class0{
 	boolean flag = true;
 	String word = "test";
 	double value = 0.5;
-	
+	Day day = Day.SUNDAY;
 	public Class0() {
 		
 	}
 	
 //function X
-	public void testMe(String s,double i,boolean b, Timer l){
+	public void testMe(String s,double i,boolean b, Timer l, Day d){
 		/*String s="a";
 		int i=0;
 		boolean b=false;*/
@@ -29,6 +29,9 @@ public class Class0{
 		else {
 			System.out.println("Antani anche per lei");
 		}
+		if(d == /*Day.SUNDAY*/day) {
+			System.out.println("A good day to die!");
+		}
 	}
 	
 	public void testMe_Pt2(String s, int i, boolean b){
@@ -39,5 +42,9 @@ public class Class0{
 				
 			}
 		}
+	}
+	public enum Day {
+	    SUNDAY, MONDAY, TUESDAY, WEDNESDAY,
+	    THURSDAY, FRIDAY, SATURDAY 
 	}
 }

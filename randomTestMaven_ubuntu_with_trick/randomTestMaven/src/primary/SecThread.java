@@ -146,7 +146,6 @@ public class SecThread extends Thread {
 	public void testMethods() {
 		TestCase test = new TestCase(id++,nBranch);
 		Instantiator inst = test.getInst();
-		inst.setClassPath(fileClassPath);
 		sm.findVar(inst);
 		Method method=null;
 		Method[] list=modifiedClass.getMethods();
@@ -301,17 +300,17 @@ public class SecThread extends Thread {
 			//reset the app with the default class&method
 			try {
 
-				Class<?> reset = loader.load("po_utils.ResetAppState", fileClassPath);
-				//Class<?> reset = Class.forName("po_utils.ResetAppState");
+				//Class<?> reset = loader.load("po_utils.ResetAppState", fileClassPath);
+				Class<?> reset = Class.forName("po_utils.ResetAppState");
 				Method resetM = reset.getMethod("reset",null);
 				resetM.invoke(reset, null);
 			}catch(Exception e) {
 				System.out.println("Something bad happened during the reset!");
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
-			System.err.println("Error test number "+(id-1)+"\n");
+			System.err.println("Errore al test numero "+(id-1)+"\n");
 			test = null;
 		}
 	}
