@@ -189,6 +189,7 @@ public class SpoonMod {
 	 * @param factory
 	 */
 	private void visitBlock(List<CtStatement> statements) {
+		if(lineToCoverList.size()==0){return;} 
 		for(int pos=statements.size()-1; pos>=0; pos--) {
 			CtStatement cts = statements.get(pos);
 			if(cts instanceof CtBodyHolder){
@@ -240,6 +241,7 @@ public class SpoonMod {
 	}
 
 	private void visitLines(Object o) {
+		if(lineToCoverList.size()==0){return;} 
 		/**
 		 * the System.out.println tell in which area you have to work and on what. so the visit is from the lower line to the upper.
 		 */
@@ -259,9 +261,11 @@ public class SpoonMod {
 	
 	private void checkLine(CtStatement lineStatement) {
 		boolean flag = false;
-		if(lineStatement.getPosition().getLine() == lineToCoverList.get(0)) {
-			lineStatement.insertBefore(this.getInstrSnippet());
-			lineToCoverList.remove(0);
+		if(lineToCoverList.size() > 0){
+			if(lineStatement.getPosition().getLine() == lineToCoverList.get(0)) {
+				lineStatement.insertBefore(this.getInstrSnippet());
+				lineToCoverList.remove(0);
+			}
 		}
 	}
 	

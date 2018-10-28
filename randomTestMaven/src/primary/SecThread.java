@@ -109,7 +109,31 @@ public class SecThread extends Thread {
 		instantiateInstrumentedClass();
 		File rootz = new File(modelSrcDirPack);
 		File sourceFilez = new File(rootz, className+"Instr.java");
-		modifiedClass = loader.load(fileName+"Instr", fileClassPath);
+		//modifiedClass = loader.load(fileName+"Instr", fileClassPath);
+/*		String[] sss = loader.findQualifiedNames(fileJavaPath);
+		Class<?>[] classes = loader.load(sss, fileClassPath);
+		for(String s : sss) {
+			System.out.println(s);
+		}
+		try {
+		Class tmptmp = Class.forName(sss[7]);
+		System.out.println("\n\n" + tmptmp.getName());
+		}catch(ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+*/
+		/*Class tmptmp = loader.load("custom_classes.Id");
+		System.out.println("\n\n" + tmptmp.getName());
+		try {
+			Class tmptm = Class.forName("custom_classes.Id");
+			System.out.println("\n\n" + tmptm.getName());
+			}catch(ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		System.exit(0);*/
+		loader.setTheClassLoader(fileClassPath);
+		modifiedClass = loader.load(fileName+"Instr");
+		
 		/**
 		 * find all the import
 		 */
@@ -146,7 +170,6 @@ public class SecThread extends Thread {
 	public void testMethods() {
 		TestCase test = new TestCase(id++,nBranch);
 		Instantiator inst = test.getInst();
-		inst.setClassPath(fileClassPath);
 		sm.findVar(inst);
 		Method method=null;
 		Method[] list=modifiedClass.getMethods();
@@ -295,23 +318,23 @@ public class SecThread extends Thread {
 					// TODO Auto-generated catch block
 					System.err.println("error invoke setChecker secThread" + e);
 				}
-				//add to the blocking queue the new test, to send it to the primary thread
-				clq.add(test);
 			}
 			//reset the app with the default class&method
 			try {
 
-				Class<?> reset = loader.load("po_utils.ResetAppState", fileClassPath);
-				//Class<?> reset = Class.forName("po_utils.ResetAppState");
+				//Class<?> reset = loader.load("po_utils.ResetAppState", fileClassPath);
+				Class<?> reset = Class.forName("po_utils.ResetAppState");
 				Method resetM = reset.getMethod("reset",null);
 				resetM.invoke(reset, null);
 			}catch(Exception e) {
 				System.out.println("Something bad happened during the reset!");
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
+			//add to the blocking queue the new test, to send it to the primary thread
+			clq.add(test);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
-			System.err.println("Error test number "+(id-1)+"\n");
+			System.err.println("Errore al test numero "+(id-1)+"\n");
 			test = null;
 		}
 	}
