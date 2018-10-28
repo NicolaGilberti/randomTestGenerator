@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 
 import spoon.Launcher;
 import spoon.reflect.declaration.CtType;
@@ -14,6 +15,9 @@ import spoon.support.JavaOutputProcessor;
 import spoon.support.compiler.jdt.JDTBasedSpoonCompiler;
 
 public class ClassModifier {
+
+	String fileSeparator = System.getProperty("file.separator"); // in Unix '/', in Windows '\'
+	String pathSeparator = System.getProperty("path.separator"); // in Unix ':', in Windows ';'
 
 	private String DEFAULT_MODEL_BIN_DIR = "spoon/bin";
 	private String DEFAULT_MODEL_SRC_DIR = "spoon/src";
@@ -129,6 +133,24 @@ public class ClassModifier {
 		}
 		fileOutput.processingDone();
 	}
+	
+	public void setTheClassLoader(String sourceDir) {
+		try {
+			URL url = new File(sourceDir).toURI().toURL();
+			URLClassLoader cl = new URLClassLoader(new URL[] {url});
+			Thread.currentThread().setContextClassLoader(cl);
+		}catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	public <T> Class<T> load(String qualifiedName){
+		URLClassLoader cl = (URLClassLoader)Thread.currentThread().getContextClassLoader();
+		try {
+			return (Class<T>)(cl.loadClass(qualifiedName));
+		}catch(ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	/**
 	 * @return the class with the given qualified name. 
@@ -147,6 +169,62 @@ public class ClassModifier {
 		catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	/**
+	 * @return classes with the given qualified name. 
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> Class<T>[] load(String[] qualifiedNames, String sourceDir) {
+		Class<T>[] classes = new Class[qualifiedNames.length];
+		int i=0;
+		try {
+			URL url = new File(sourceDir).toURI().toURL();
+			URLClassLoader cl = new URLClassLoader(new URL[] {url});
+			Thread.currentThread().setContextClassLoader(cl);
+			for(String s : qualifiedNames) {
+				classes[i] = (Class<T>)(cl.loadClass(s));
+				i++;
+			}
+		} 
+		catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		} 
+		catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		return classes;
+	}
+	/**
+	 * the first step is used to remove the 'first' dir that is not part of the dot notation of the classes
+	 * @param sourceDir
+	 * @return
+	 */
+	public String[] findQualifiedNames(String sourceDir) {
+		ArrayList<String>  qn = findQualifiedNamesPt2(sourceDir);
+		String[] ss = new String[qn.size()];
+		for(int i=0; i<qn.size(); i++) {
+			String s = qn.get(i);
+			ss[i] = s.substring(s.indexOf(".")+1);
+		}
+		return ss;
+	}
+
+	private ArrayList<String> findQualifiedNamesPt2(String sourceDir) {
+		ArrayList<String>  qn = new ArrayList<String>();
+		File f = new File(sourceDir);
+		if(f.isDirectory()) {
+			for(String ff : f.list()) {
+				ArrayList<String> tmp = findQualifiedNamesPt2(sourceDir + fileSeparator +ff);
+				for(String s : tmp) {
+					qn.add(f.getName() + "." + s);
+				}
+			}
+		}
+		else {
+			String[] s = f.getName().split("\\.");
+			qn.add(s[0]);
+		}
+		return qn;
 	}
 
 	/**

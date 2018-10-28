@@ -109,7 +109,31 @@ public class SecThread extends Thread {
 		instantiateInstrumentedClass();
 		File rootz = new File(modelSrcDirPack);
 		File sourceFilez = new File(rootz, className+"Instr.java");
-		modifiedClass = loader.load(fileName+"Instr", fileClassPath);
+		//modifiedClass = loader.load(fileName+"Instr", fileClassPath);
+/*		String[] sss = loader.findQualifiedNames(fileJavaPath);
+		Class<?>[] classes = loader.load(sss, fileClassPath);
+		for(String s : sss) {
+			System.out.println(s);
+		}
+		try {
+		Class tmptmp = Class.forName(sss[7]);
+		System.out.println("\n\n" + tmptmp.getName());
+		}catch(ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+*/
+		/*Class tmptmp = loader.load("custom_classes.Id");
+		System.out.println("\n\n" + tmptmp.getName());
+		try {
+			Class tmptm = Class.forName("custom_classes.Id");
+			System.out.println("\n\n" + tmptm.getName());
+			}catch(ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		System.exit(0);*/
+		loader.setTheClassLoader(fileClassPath);
+		modifiedClass = loader.load(fileName+"Instr");
+		
 		/**
 		 * find all the import
 		 */
