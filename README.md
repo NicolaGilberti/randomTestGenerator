@@ -15,11 +15,12 @@
 
 # To run the project
 In general:	mvn exec:java -Dexec.mainClass="primary.MainProgram" \
-On Windows:	mvn exec:java -D"exec.mainClass"="primary.MainProgram"\
+On Windows:	mvn exec:java -D"exec.mainClass"="primary.MainProgram" \
 
-runner.sh contains a simple script to run the project\
+runner.sh contains a script to run the project \
 
 #### Requirements
 1. fill the .properties/.sh files with the proper values
 2. check all the paths 
 3. the classpath can be found using the command 'mvn dependency:build-classpath' in the project dir. The classpath required in the .sh file is different from the classpath required in the .properties file.
+4. the second classpath is the same, but it will be eventually removed.

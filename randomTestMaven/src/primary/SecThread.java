@@ -352,7 +352,9 @@ public class SecThread extends Thread {
 			File sourceFilez = new File(rootz, className+".java");
 			//loader.addClass(sourceFilez);
 			loader.addSourcePath(fileJavaPath);
-			Class<?> classToLoad = loader.load(fileName, fileClassPath);
+
+			//loader.setTheClassLoader(fileClassPath);
+			Class<?> classToLoad = loader.load(fileName,fileClassPath);
 			
 			Factory f = loader.getFactory();
 			sm.setFactory(f);
