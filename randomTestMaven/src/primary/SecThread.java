@@ -107,32 +107,13 @@ public class SecThread extends Thread {
 		super.run();
 		
 		instantiateInstrumentedClass();
-		File rootz = new File(modelSrcDirPack);
-		File sourceFilez = new File(rootz, className+"Instr.java");
-		//modifiedClass = loader.load(fileName+"Instr", fileClassPath);
-/*		String[] sss = loader.findQualifiedNames(fileJavaPath);
-		Class<?>[] classes = loader.load(sss, fileClassPath);
-		for(String s : sss) {
-			System.out.println(s);
+		//loader.setTheClassLoader(fileClassPath);
+		//modifiedClass = loader.load(fileName+"Instr");
+		try{
+			modifiedClass = Class.forName(fileName+"Instr");
+		}catch(ClassNotFoundException e){
+			System.err.println("SecThread.run: class not found error " + e);
 		}
-		try {
-		Class tmptmp = Class.forName(sss[7]);
-		System.out.println("\n\n" + tmptmp.getName());
-		}catch(ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-*/
-		/*Class tmptmp = loader.load("custom_classes.Id");
-		System.out.println("\n\n" + tmptmp.getName());
-		try {
-			Class tmptm = Class.forName("custom_classes.Id");
-			System.out.println("\n\n" + tmptm.getName());
-			}catch(ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		System.exit(0);*/
-		loader.setTheClassLoader(fileClassPath);
-		modifiedClass = loader.load(fileName+"Instr");
 		
 		/**
 		 * find all the import
@@ -237,14 +218,6 @@ public class SecThread extends Thread {
 
 			int methodCounter=1;//from 1 because constructor is  0 (line 157)
 			for(String methodString : listOfNavigationMethods) {
-				/*
-				 * string methodName contains:
-				 * 
-				 * System.out.println(methodName);
-				 * the name of the method dash(-)
-				 * the name of the starting node dash(-)
-				 * the node of the ending node
-				 */
 				String[] methodData = methodString.split("-");
 				String methodName = methodData[0];
 				String startingNode = methodData[1];
@@ -321,14 +294,11 @@ public class SecThread extends Thread {
 			}
 			//reset the app with the default class&method
 			try {
-
-				//Class<?> reset = loader.load("po_utils.ResetAppState", fileClassPath);
 				Class<?> reset = Class.forName("po_utils.ResetAppState");
 				Method resetM = reset.getMethod("reset",null);
 				resetM.invoke(reset, null);
 			}catch(Exception e) {
 				System.out.println("Something bad happened during the reset!");
-				e.printStackTrace();
 			}
 			//add to the blocking queue the new test, to send it to the primary thread
 			clq.add(test);
@@ -345,17 +315,16 @@ public class SecThread extends Thread {
 	 */
 	public void instantiateInstrumentedClass() {
 		try {
-			//System.out.println("Filepath: " + filePath + " name: " + fileName);
-			//loader.addSourcePath(filePath);	
-			//Class<?> classToLoad = loader.load(fileName);
 			File rootz = new File(fileJavaPathPack);
 			File sourceFilez = new File(rootz, className+".java");
-			//loader.addClass(sourceFilez);
 			loader.addSourcePath(fileJavaPath);
 
-			//loader.setTheClassLoader(fileClassPath);
-			Class<?> classToLoad = loader.load(fileName,fileClassPath);
-			
+			Class<?> classToLoad = null;
+			try{
+				classToLoad = Class.forName(fileName);
+			}catch(ClassNotFoundException e){
+				System.err.println("SecThread.instantiateInstrumentedClass: class not found error " + e);
+			}
 			Factory f = loader.getFactory();
 			sm.setFactory(f);
 			/**

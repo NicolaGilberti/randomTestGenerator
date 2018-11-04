@@ -133,67 +133,7 @@ public class ClassModifier {
 		}
 		fileOutput.processingDone();
 	}
-	
-	public void setTheClassLoader(String sourceDir) {
-		try {
-			URL url = new File(sourceDir).toURI().toURL();
-			URLClassLoader cl = new URLClassLoader(new URL[] {url});
-			Thread.currentThread().setContextClassLoader(cl);
-		}catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	public <T> Class<T> load(String qualifiedName){
-		URLClassLoader cl = (URLClassLoader)Thread.currentThread().getContextClassLoader();
-		try {
-			return (Class<T>)(cl.loadClass(qualifiedName));
-		}catch(ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-	}
 
-	/**
-	 * @return the class with the given qualified name. 
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> Class<T> load(String qualifiedName, String sourceDir) {
-		try {
-			URL url = new File(sourceDir).toURI().toURL();
-			URLClassLoader cl = new URLClassLoader(new URL[] {url});
-			Thread.currentThread().setContextClassLoader(cl);
-			return (Class<T>)(cl.loadClass(qualifiedName));
-		} 
-		catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		} 
-		catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	/**
-	 * @return classes with the given qualified name. 
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> Class<T>[] load(String[] qualifiedNames, String sourceDir) {
-		Class<T>[] classes = new Class[qualifiedNames.length];
-		int i=0;
-		try {
-			URL url = new File(sourceDir).toURI().toURL();
-			URLClassLoader cl = new URLClassLoader(new URL[] {url});
-			Thread.currentThread().setContextClassLoader(cl);
-			for(String s : qualifiedNames) {
-				classes[i] = (Class<T>)(cl.loadClass(s));
-				i++;
-			}
-		} 
-		catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		} 
-		catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-		return classes;
-	}
 	/**
 	 * the first step is used to remove the 'first' dir that is not part of the dot notation of the classes
 	 * @param sourceDir
@@ -225,20 +165,5 @@ public class ClassModifier {
 			qn.add(s[0]);
 		}
 		return qn;
-	}
-
-	/**
-	 * @return the reflective instance of the class with the given qualified name
-	 */
-	public <T> CtType<T> mirror(String qualifiedName, String sourceDir) {
-		Class<T> clazz = load(qualifiedName, sourceDir);
-		return mirror(clazz);
-	}
-
-	/**
-	 * @return the reflective instance of the given class
-	 */
-	public <T> CtType<T> mirror(Class<T> clazz) {
-		return getFactory().Type().get(clazz);
 	}
 }
