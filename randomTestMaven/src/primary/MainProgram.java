@@ -24,12 +24,13 @@ import java.io.StringReader;
 
 import support.test.TestCase;
 import support.test.TestCaseGenerator;
+import support.generator.ClassPathManager;
 
 public class MainProgram {
 
 	private static String fileSeparator = System.getProperty("file.separator"); // in Unix '/', in Windows '\'
 	private static String pathSeparator = System.getProperty("path.separator"); // in Unix ':', in Windows ';'
-	
+
 	private static ArrayList<TestCase> finalTests;
 	private static long testTimer;//millisecond
 	private static String fileName;
@@ -51,7 +52,7 @@ public class MainProgram {
 
 	protected static boolean threadAlive = true;
 
-	 public static void main(String[] args){
+	public static void main(String[] args){
 
 		finalTests = new ArrayList<TestCase>();
 
@@ -84,7 +85,21 @@ public class MainProgram {
 		requiredPath =  "." + pathSeparator + pathToProjectDir + fileSeparator + projectName + fileSeparator + destDirectory + pathSeparator;
 		requiredPath += appProps.getProperty("RequiredPath");
 		//System.out.println(requiredPath.replaceAll(pathSeparator, "\n"));
-		System.setProperty("java.class.path",requiredPath);
+
+		/**
+		 * 
+		 * ANOTHER WAY TO ADD CLASSPATHS DINAMICALLY (SETPROPERTY DOESN'T WPRK)
+		 * System.setProperty("java.class.path",requiredPath);
+		 * 
+		 */
+		String[] paths = requiredPath.split(pathSeparator);
+		for(String pth : paths) {
+			try {
+				ClassPathManager.addFile(pth);
+			}catch(IOException e) {
+				System.err.println("MainProgram: error with the ClassPathManager " + e);
+			}
+		}
 
 		testTimer = Long.parseLong(appProps.getProperty("ExecutionTestTimer"));
 		maxNum = Integer.parseInt(appProps.getProperty("MaxNumberOfMethodXTest"));
