@@ -173,9 +173,9 @@ public class MainProgram {
 				fileClassPathPack += fileSeparator + packagePath;
 			}
 			FileUtils.deleteDirectory(new File("spoon"));
-			//File jf = new File(fileJavaPathPack + fileSeparator + className + "Instr.java");
+			File jf = new File(fileJavaPathPack + fileSeparator + className + "Instr.java");
 			File cf = new File(fileClassPathPack + fileSeparator + className + "Instr.class");
-			//FileUtils.deleteQuietly(jf);
+			FileUtils.deleteQuietly(jf);
 			FileUtils.deleteQuietly(cf);
 		}catch(Exception e) {
 			System.err.println("error removing tempor spoon dir " + e);
