@@ -80,7 +80,7 @@ public class RandomGenerator {
 	 * @return the object set with a random value
 	 */
 	public MapValue setNewValue(MapValue obj) {
-		
+		random.setSeed(System.currentTimeMillis());
 		switch(obj.getValue().getClass().getName()) {
 		case "java.lang.Integer":
 			obj.setValue(random.nextInt(Integer.MAX_VALUE));

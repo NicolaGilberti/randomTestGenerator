@@ -102,7 +102,7 @@ public class Instantiator {
 					s += parameters[i].getName() + ":";
 				}
 				random = new Random();
-				
+				random.setSeed(System.currentTimeMillis());
 				switch (clazNameTmp){
 				case "boolean":
 					obj[i] = Class.forName(temp).getConstructor(boolean.class).newInstance(true);
