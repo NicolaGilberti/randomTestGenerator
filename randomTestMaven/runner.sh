@@ -5,13 +5,16 @@ ITERATIONS=$1
 FILE=$2
 #to set a specific file for the output
 OUTPUT=$3
+#set the testsuite path
+TestSuitePath=./finalResult
+fileTest=Tester
 #Set the path to the Program
 jar=/home/foobar/.m2/repository/randomTestMaven/randomTestMaven/0.0.1/randomTestMaven-0.0.1.jar
 #the path of the project to test (if different from . -> current dir)
 dir_under_test=.
-#the program need its proper properties file, so set the path to it
-prop=/home/foobar/workspace/randomTestGenerator/randomTestMaven/program.properties
-cp $prop $dir_under_test
+#the program need its proper properties file, so set the path to it (insert the correct name)
+prop=/home/foobar/workspace/randomTestGenerator/randomTestMaven/program____________.properties
+cp $prop $dir_under_test/program.properties
 #evosuite/selenium/idk generate a .ser file. Set the path of that file
 serFile=/home/foobar/Desktop/*.ser
 #classpath of the dependencies of the program (fisrt elem inserted)
@@ -28,26 +31,36 @@ if [[ -z $OUTPUT ]]; then
 fi
 #clean the file, to be sure that we are not collecting extra wrong data
 cp /dev/null $OUTPUT
+
+rm -rf $TestSuitePath
 #loop for the iterations required
 COUNT=0
 while [ $COUNT -lt $ITERATIONS ]
 do	
+	#the program generate a .ser file that must be removed to let the program to go on
+	rm -f $serFile
 	((COUNT++))
 	echo iteration number $COUNT
 	java  -cp $jar:$classpath primary.MainProgram $* >> $OUTPUT
 	sleep 5
 	#only to close the chrome tab, to avoid the opening of n tabs
 	killall chrome
-	#the program generate a .ser file that must be removed to let the program to go on
-	rm -f $serFile
+	cp $TestSuitePath/$fileTest.java $TestSuitePath/$fileTest-$COUNT.java
+	rm $TestSuitePath/$fileTest.java
 done
 
 echo $'\n'The results of the $ITERATIONS tests:
 cat $OUTPUT
-RES=$(grep -o [0-9]*\\.[0-9]* $OUTPUT | awk '{ SUM += $1} END { printf "\nThe AVG is=> %0.16f\n",SUM/'$ITERATIONS' }')
-echo $RES
+RESAVG=$(grep -o [0-9]*\\.[0-9]* $OUTPUT | awk '{ SUM += $1} END { printf "\nThe AVG is=> %0.16f\n",SUM/'$ITERATIONS' }')
+RESMIN=$(grep -o [0-9]*\\.[0-9]* $OUTPUT | awk 'BEGIN{min=1}{if ($1<0+min) min=$1} END { printf "\nThe MIN is=> %0.16f\n",min }')
+RESMAX=$(grep -o [0-9]*\\.[0-9]* $OUTPUT | awk 'BEGIN{max=0}{if ($1>0+max) max=$1} END { printf "\nThe MAX is=> %0.16f\n",max }')
+echo $RESAVG
+echo $RESMIN
+echo $RESMAX
 if $FILE; then
-	echo $RES >> $OUTPUT
+	echo $RESAVG >> $OUTPUT
+	echo $RESMIN >> $OUTPUT
+	echo $RESMAX >> $OUTPUT
 else
 	rm $OUTPUT
 fi

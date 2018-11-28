@@ -73,7 +73,7 @@ public class TestCaseGenerator {
 			Files.write(sourceFile.toPath(), s.getBytes(StandardCharsets.UTF_8));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.out.println("Error: file In/Out failed:" + e);
+			System.err.println("Error: file In/Out failed:" + e);
 		}
 	}
 

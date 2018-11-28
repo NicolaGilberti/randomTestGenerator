@@ -3,12 +3,15 @@ package support.generator;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.*;
+import java.util.Collections;
 
 import support.spoon.*;
 
@@ -166,7 +169,15 @@ public class Instantiator {
 					}
 					Object[] enumOptions = parameters[i].getEnumConstants();
 					int enumOptionsLenght = enumOptions.length;
-					Object valuezz = enumOptions[random.nextInt(enumOptionsLenght)];
+
+					Integer[] randArr = new Integer[11];
+					for(int ii=0; ii<11;ii++){
+						randArr[ii] = random.nextInt(Integer.MAX_VALUE)%enumOptionsLenght;
+					}
+					List<Integer> randList = Arrays.asList(randArr);
+					Integer maxOccurredElem = randList.stream().reduce(BinaryOperator.maxBy((o1, o2) -> Collections.frequency(randList, o1) - Collections.frequency(randList, o2))).orElse(null);
+
+					Object valuezz = enumOptions[maxOccurredElem];
 					mV = new MapValue(valuezz,u,lvl,i);
 					if(rG.map.containsKey(temp)){
 						rG.addToMap(mV);

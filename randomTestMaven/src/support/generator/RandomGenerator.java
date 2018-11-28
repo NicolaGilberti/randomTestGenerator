@@ -154,6 +154,6 @@ public class RandomGenerator {
 			}
 			s+="\n";
 		}
-		System.out.println(s);
+		System.err.println(s);
 	}
 }

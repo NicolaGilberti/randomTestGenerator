@@ -2,10 +2,6 @@ package support.spoon;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
 
 import spoon.Launcher;
 import spoon.reflect.declaration.CtType;
@@ -139,7 +135,7 @@ public class ClassModifier {
 	 * @param sourceDir
 	 * @return
 	 */
-	public String[] findQualifiedNames(String sourceDir) {
+	/*public String[] findQualifiedNames(String sourceDir) {
 		ArrayList<String>  qn = findQualifiedNamesPt2(sourceDir);
 		String[] ss = new String[qn.size()];
 		for(int i=0; i<qn.size(); i++) {
@@ -165,5 +161,5 @@ public class ClassModifier {
 			qn.add(s[0]);
 		}
 		return qn;
-	}
+	}*/
 }

@@ -2,29 +2,14 @@ package support.spoon;
 
 import java.util.Comparator;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import spoon.reflect.code.CtBlock;
-import spoon.reflect.code.CtBodyHolder;
-import spoon.reflect.code.CtCodeSnippetStatement;
-import spoon.reflect.code.CtExpression;
-import spoon.reflect.code.CtIf;
-import spoon.reflect.code.CtLiteral;
-import spoon.reflect.code.CtStatement;
-import spoon.reflect.declaration.CtClass;
-import spoon.reflect.declaration.CtConstructor;
-import spoon.reflect.declaration.CtExecutable;
-import spoon.reflect.declaration.CtField;
-import spoon.reflect.declaration.CtMethod;
-import spoon.reflect.declaration.CtEnum;
-import spoon.reflect.declaration.CtParameter;
-import spoon.reflect.declaration.ModifierKind;
+import spoon.reflect.declaration.*;
+import spoon.reflect.code.*;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.path.CtRole;
 import spoon.reflect.reference.CtTypeReference;
@@ -32,8 +17,6 @@ import spoon.reflect.visitor.chain.CtQuery;
 import spoon.reflect.visitor.filter.AnnotationFilter;
 import spoon.reflect.visitor.filter.TypeFilter;
 import spoon.reflect.cu.SourcePosition;
-import spoon.reflect.declaration.*;
-import spoon.reflect.code.*;
 import support.generator.Instantiator;
 import support.generator.MapValue;
 
@@ -42,6 +25,7 @@ public class SpoonMod {
 	private static Factory factory;
 	private static CtClass<?> cc;
 	private static ArrayList<Integer> lineToCoverList;
+	private HashMap<Integer,String> instrToMethodMap;
 
 	public void setFactory(Factory factory) {
 		this.factory = factory;
@@ -161,6 +145,8 @@ public class SpoonMod {
 	public void modifyForLineCoverage(Class<?> inputClass, String[] lineToCover) {
 		cc = (CtClass<?>) factory.Class().get(inputClass);
 		CtMethod<?> method;
+		instrToMethodMap = new HashMap<Integer,String>();
+
 		lineToCoverList = new ArrayList<Integer>();
 		for(int i=lineToCover.length-1; i>=0; i--) {
 			lineToCoverList.add(new Integer(lineToCover[i]));
@@ -171,12 +157,21 @@ public class SpoonMod {
 		List<CtMethod<?>> underTest = new ArrayList<CtMethod<?>>(methods);
 		underTest.sort(comp);
 		
+
+		int tempCounter = this.counter;
 		Iterator<?> itm = underTest.iterator();
 		while(itm.hasNext()) {
 			method = (CtMethod<?>) itm.next();
 			CtExecutable<?> methodDecl = factory.Method().createReference(method).getDeclaration();	
 			List<CtStatement> statements = methodDecl.getBody().getStatements();
 			visitBlock(statements);
+			if(this.counter!=tempCounter){
+				for (int x=tempCounter; x<this.counter; x++) {
+					instrToMethodMap.put(x, method.getSimpleName());
+				}
+			}
+			tempCounter = this.counter;
+
 		}
 		modConstructors(cc);
 		addField(cc);
@@ -358,5 +353,15 @@ public class SpoonMod {
 	
 	public CtCodeSnippetStatement getInstrSnippet(){
 		return factory.Code().createCodeSnippetStatement("checker.add("+ counter++ +")");
+	}
+
+	public HashMap<Integer, String> getInstrToMethodMap(){
+		return this.instrToMethodMap;
+	}
+
+	public void printInstrToMethodMap(){
+		for (Integer i : this.instrToMethodMap.keySet()) {
+			System.err.println("Instrumentation value: "+i+" mapped to method: "+this.instrToMethodMap.get(i));
+		}
 	}
 }
