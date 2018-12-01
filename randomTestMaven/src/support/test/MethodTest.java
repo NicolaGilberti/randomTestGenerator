@@ -210,6 +210,7 @@ public class MethodTest {
 		}
 		else if(this.method instanceof Constructor) {
 			String name = this.method.getName();
+			name = name.substring(0,name.length()-5);//to remove Instr
 			s += name + " obj = new " + name; 
 		}
 		s += "(" + something + ");\n"; 
