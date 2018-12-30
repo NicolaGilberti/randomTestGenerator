@@ -12,7 +12,7 @@ The first method leverage on generics to manipulate the AST that give to the pro
 Another option that Spoon implement is the template engine with static-checks that let the programmer insert code ensuring automatically its correctness.\\
 In case of those technique are not used, you can still check the well-formedness  analyzing the stack trace error at compile time.
 
-\subsubsection{How it works}
+\subsubsection{How it works}\label{subsec:howSpoon}
 Spoon works primarily on the AST, giving elements to analyze and modify the syntax tree.\\
 In fact, the \emph{Processor} and the \emph{Factory} features are the key-components to use to examine and to transform the code.\\
 The Processor let the programmer analyze the AST, while the Factory permit to modify the AST, adding and/or removing elements from the syntax trees.\\
@@ -22,10 +22,8 @@ Those operation are possible thanks to the visit pattern applied to the Spoon mo
 All the elements have an \emph{Accept} method that give the permission to be visited by a visitor object.\\
 For instance, in the example \ref{lst:ProcessorExample} a Processor is used to analyze the code, searching for empty catch block.
 As we can see, the Processor works on a CtCatch, which is the Compile Time Catch given by the Spoon Metamodel, and check for the Statments inside the CtCatch body. \\
-As shown before, to generate new elements, a \emph{Factory} instance is necessary. 
-\lstset{language=Java}          % Set your language (you can change the language for each code-block optionally)
-\label{lst:ProcessorExample}
-\begin{lstlisting}[caption={Processor example taken from \href{http://spoon.gforge.inria.fr/processor.html}{Spoon documentation}}]% Start your code-block
+As shown before, to generate new elements, a \emph{Factory} instance is necessary.\\
+\begin{lstlisting}[caption={Processor example taken from \href{http://spoon.gforge.inria.fr/processor.html}{Spoon documentation}},label={lst:ProcessorExample}]% Start your code-block
 
 public class CatchProcessor extends AbstractProcessor<CtCatch> {
 	public void process(CtCatch element) {
@@ -38,10 +36,8 @@ public class CatchProcessor extends AbstractProcessor<CtCatch> {
 
 \emph{Factory} give the coder the ability to create new elements, fill their data and add them to the Syntax Trees under analysis.
 There are more than one Factory, where each one is specialized to facilitate the creation of elements.
-As shown before, to generate new elements, a \emph{Factory} instance is necessary. 
-\lstset{language=Java}          % Set your language (you can change the language for each code-block optionally)
-\label{lst:FactoryExample}
-\begin{lstlisting}[caption={Factory example taken from \href{https://www.programcreek.com/java-api-examples/index.php?api=spoon.reflect.factory.Factory}{Spoon Projects}}]% Start your code-block
+As shown before, to generate new elements, a \emph{Factory} instance is necessary.\\
+\begin{lstlisting}[caption={Factory example taken from \href{https://www.programcreek.com/java-api-examples/index.php?api=spoon.reflect.factory.Factory}{Spoon Projects}},label={lst:FactoryExample}]% Start your code-block
 
 Factory factory = this.getFactory();
 String snippet = this.getLogName() + ".testOut(Thread.currentThread())";

@@ -1,1 +1,91 @@
 \section{Primitive input generator}\label{sec:pig}
+The process of the generator works hand by hand with the \emph{Test Generator}~\ref{sec:tg}, and it does multiple works.
+The goal of this chapter is to define all the primitives types this project can random-generate and how values already instantiated could be reused during their lifecycle.\\
+This work is based on the Java language, so its well-known primitives are maintained.
+There is an extra types  directly generated from the code and it is the \emph{String}.\\
+About the Java primitives, they can be used in a reflection environment only thanks to their object representations like \emph{Integer} for \emph{int}, \emph{Character} for \emph{char} and so on.\\
+When the program require the generation of a new variable, and the process find that it require a primitive, it start instantiating the proper types with a default constructor, assigning a fixed value.
+Then it is checked if an older generated value exist and, in case of a true response, a first random choice is performed.\\
+With an equal probability, it is possible that the program try to generate a new value or choose to pick an old ones.
+There is a third options for object types that is the \emph{null} value, but has a smaller probability to appear.\\
+When an older value is chosen, the data to link the two references are arranged for future steps.
+On the other case, a random value is required, and the Random~\cite{rand} class enter in action.\\
+For some primitives, this dependency is able to generate directly a value, while in other cases an extra work is necessary.
+In fact, in case of int, float, long, double, and boolean, there are already functions.
+\begin{lstlisting}[caption={Random default generator},label={lst:genDef}]% Start your code-block
+
+case "java.lang.Integer":
+	obj.setValue(random.nextInt());
+case "java.lang.Float":
+	obj.setValue(random.nextFloat());
+case "java.lang.Long":
+	obj.setValue(random.nextLong());
+case "java.lang.Double":
+	obj.setValue(random.nextDouble());
+case "java.lang.Boolean":
+	obj.setValue((random.nextBoolean());
+\end{lstlisting}
+However, in case of short, the random-generator can be done thinking on how the type is constructed.
+\begin{lstlisting}[caption={Random short generator},label={lst:genShort}]% Start your code-block
+	
+case "java.lang.Short":
+	obj.setValue(random.nextInt(65536) - 32768);
+\end{lstlisting}
+Char and string require more operations, thus an extra function enter in action.
+\begin{lstlisting}[caption={Random String/char generator},label={lst:genString&Char}]% Start your code-block
+
+public static String generateRandomChars(String candidateChars, int length, Random random) {
+	StringBuilder sb = new StringBuilder();
+	for (int i = 0; i < length; i++) {
+		sb.append(candidateChars.charAt(random.nextInt(candidateChars.length())));
+	}
+	return sb.toString();
+}
+\end{lstlisting}
+The difference between String and char is the length input, which is 1 for character, and random generated for strings.
+Variable \emph{candidateChars} is a sequence of accepted character. 
+For example, \emph{"ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefhijklmnopqrstuvwxyz"} can be used if upper/lower case letters and numbers are the only accepted values we want to generate with.\\
+In the Java language, there are also different types of objects, and one of them is the Enumerator~\cite{enum}.\\
+This program consider Enums as a primitive type and when one is found, it generate one instance of it with a random value accordingly with the requirement of randomness.\\
+With this particular object type, the equal operation work differently and so, the links for the usage of old values are not necessary. 
+\begin{lstlisting}[caption={Equality in enums},label={lst:enumEquality}]% Start your code-block
+
+Enum v1 = Enum.value1;
+Enum v2 = Enum.value1;
+System.out.println( v1 == v2 );
+//True
+\end{lstlisting}
+In case of it is required an instantiation that do not belong to the previous cases, a recursive approach is adopted.
+\begin{lstlisting}[caption={non primitive/enums recursion},label={lst:recursion}]% Start your code-block
+
+int maxVal = targetClass.getConstructors().length;
+int ran = random.nextInt(maxVal);
+Constructor<?> targetC = targetClass.getConstructors()[ran];
+int parVal = targetC.getParameterTypes().length;
+if(parVal!=0) {
+	try {
+		req = new Object[parVal];
+		Class<?>[] paramType = targetC.getParameterTypes();
+		Object[] par = istantiatedArray(req, paramType);
+		obj[i] = Class.forName(targetClassName).getConstructor(paramType).newInstance(par);
+	}catch(NoSuchMethodException  | IllegalArgumentException | InvocationTargetException e) {
+		System.err.println("Instantiator error, it will try again " + e);
+	}
+}else {
+	obj[i] = Class.forName(targetClassName).newInstance();
+}
+\end{lstlisting}
+The 'unknown' class is analysed, collecting all its constructors.
+Then one is randomly picked and, if variables are required to execute the constructor, the random generation process is re-called on each element, line 9 in~\ref{lst:recursion}.
+If the constructor does not require any input variables, Java reflection can instantiate it directly.\\
+There is also the option in which the class was already instantiated with random values and the randomness choose to take an old option instead of a new one.
+This is automatically done as in the case of primitives, and the links between variables are saved accordingly.
+For example, there is a class Clazz that has to be instantiated.
+It is nor primitive neither an enum, so a random constructor is picked.
+The one taken require two variables, an int and another unknown class Clazz2.
+So the generator is recalled on the int variable and on the Clazz2.
+About the primitive typos, the program could generate a new value or pick an old ones if exist.
+Clazz2 has only the default empty constructor, thus Reflection can instantiate it directly.
+Now there is the backtrack on the recursion and the Clazz can be instantiated with the constructor chosen and the input variables created just before.\\
+With this approach the program is able to instantiate any kind of object, which are referenced in the environment, that are required for tests.\\
+As an example of the environment requirement, in case of a class X is required to be instantiated and its source is not in the class-path, the instantiation fail and the creation of tests \emph{is} compromised.

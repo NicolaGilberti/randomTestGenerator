@@ -111,9 +111,9 @@
 \pagestyle{fancy}
 \fancyhf{} %delete everything
 \renewcommand{\headrulewidth}{0pt} %remove the horizontal line in the header
-%\fancyhead[RE]{\small\nouppercase\leftmark} %even page - chapter title
+\fancyhead[RE]{\small\nouppercase\leftmark} %even page - chapter title
 \fancyhead[LO]{\small\nouppercase\rightmark} %uneven page - section title
-%\fancyhead[LE,RO]{\thepage} %page number on all pages
+\fancyhead[LE,RO]{\thepage} %page number on all pages
 % Do not stretch the content of a page. Instead,
 % insert white space at the bottom of the page
 \raggedbottom
@@ -211,7 +211,7 @@
 	tabsize=4,
 	showstringspaces=false,
 	numbers=left,
-	emph={int,char,double,float,unsigned,void,bool,String,File,Files,ByteArrayOutputStream,StandardCharsets,CtCodeSnippetStatement,CtCodeSnippetStatement,CtBlock,Factory},
+	emph={int,char,double,float,unsigned,void,bool,String,File,Files,ByteArrayOutputStream,StandardCharsets,CtCodeSnippetStatement,CtCodeSnippetStatement,CtBlock,Factory,JDTBasedSpoonCompiler,Exception,RuntimeException,IOException,CtClass,List,CtConstructor,Set,Iterator,CtBlock,ArrayList,CtStatement,Random,StringBuilder,System,out,println,Enum,HashSet,Integer,TestCase},
 	emphstyle={\color{blue!60!green}}
 }
 
@@ -219,3 +219,11 @@
 %\widowpenalty=10000 
 %\clubpenalty=10000 
 %\raggedbottom
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%									 %
+% 			Variables area			 %
+%									 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\projRootLink}{https://github.com/NicolaGilberti/randomTestGenerator/blob/master/randomTestMaven/src}

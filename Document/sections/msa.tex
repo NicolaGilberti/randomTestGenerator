@@ -5,6 +5,7 @@ This architecture balance the work-load on multiprocessor, increasing the effici
 A similar approach is also used by EvoSuite~\cite{evosuite}, the counterpart of this project.\\
 Although EvoSuite is a better choice because it perform more different operations, some of them are not required for the scope of the project.
 Thus, it is demanded a resource affordable project that perform only the required operations, avoiding not necessary tasks.\\
+The algorithm use threads for specific purposes, defining distinct operation and scopes for each one.
 Firstly the main thread start, managing all the import from resources~\ref{sec:prop} to prepare the environment for the other thread.\\
 In fact, the values imported need to be manipulated, to became effective elements.
 For example, class-path must be updated dynamically in order to recover all the classes necessaries in future steps.\\
@@ -12,3 +13,5 @@ The second thread begins after the allocation of the environment.
 This new thread, that can be seen as the slave, execute most of the complex algorithms and send messages to the master all the time it find something.\\
 In fact, second thread instrument the input class~\ref{sec:ClassInstr}, and generate tests on it~\ref{sec:tg}.\\
 Those tests are sent back to the primary thread, messages pass through a LinkedBlockingQueue~\cite{linkedBlockingQueue}, that check their validity to create a well-formed test-suite.\\
+The choice of a LinkedBlockingQueue is a default option, to reduce the impact on the memory load during inactivity and to avoid concurrent mistakes at run-time.\\
+Even if there can't be simultaneous access from both threads, because the second one generates the message and it restarts creating a new one, the implementation follows the best-practices hints for correct data exchange between threads.

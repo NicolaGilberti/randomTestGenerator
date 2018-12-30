@@ -1,1 +1,62 @@
 \section{Test generator}\label{sec:tg}
+This chapter cover a big part of the program because the whole test generation process start from the secondary thread~\ref{sec:MSArch}, pass through the generator~\ref{sec:pig} and end in the next subsections~\ref{subsec:creation}~\ref{subsec:prettyprinting}.\\
+This program depends on an external service that given a graph representing the class under test, an ending point and a length, it return a random path of at most the size given that finish in the target.
+Given all the proper data collected by the main thread, see~\ref{sec:MSArch} and~\ref{ch:usage}, the second thread recreate a possible correct sequence of action that can be performed on the class.
+This operation is executed before the creation of each thread.\\
+Before the creation of a test, the sequence generated is manipulated for the next steps.
+This sequence consist in a list of strings where each string is the name of the method to execute, the node in which it can be executed and the ending node if the method run throwing no error.\\
+For each method, an instance of a~\href{\projRootLink/support/test/MethodTest.java}{MethodTest class} is instantiated, and thanks to that, all the supporting variable are created.
+In this class there is the list of the attributes that are generated with the random generator~\ref{sec:tg}, and all the data to reconstruct them.
+Those values are created once for each method and they are maintained until they need.\\
+Then, the test creation start.
+\subsection{Creation}\label{subsec:creation}
+Till now there is a list of methods and for each of them there is a possible input.
+Here can be done extra controls on the list and on their input to reject or accept the list as a possible test case.\\
+After that an instance of the instrumented class is generated and the method's list is executed in order.\\
+When an error is thrown, the data is collected and saved for the next step~\ref{subsec:prettyprinting}.
+Executing the methods, instrumentation can be invoked and, at the end of the list execution, all the covered element are saved.\\
+Each ran list, its input and outcomes, are then considered as a Test-case.\\
+This blob of data contains everything that permit the validation of the test and also the re-execution of it, maintaining the same outputs: test-case are idem-potent.\\
+Each test as to be checked in order to add it or not to the final test-suite.
+The final test-suite is then created dynamically.
+\begin{lstlisting}[caption={Check test method},label={lst:checkForFinalTestSuite}]% Start your code-block
+
+private static void AddToFinalTestCase(TestCase newTest) {
+	HashSet<Integer> tmp1 = newTest.getBranchCovered();
+	boolean flag=true;
+	if(finalTests.isEmpty()) {
+		finalTests.add(newTest);
+	}else {
+		for(int i=0;i<finalTests.size();i++) {
+			TestCase oldTest = finalTests.get(i);
+			if(sameValues(oldTest.getBranchCovered(), newTest.getBranchCovered())) {
+				flag=false;
+				if(oldTest.getMethodList().size()>newTest.getMethodList().size()) {
+					finalTests.set(i, newTest);
+				}
+				break;
+			}else {
+				if(newTest.getBranchCovered().containsAll(oldTest.getBranchCovered())) {
+					finalTests.set(i, newTest);
+					flag=false;
+					break;
+				}else if(oldTest.getBranchCovered().containsAll(newTest.getBranchCovered())){
+					flag=false;
+					break;
+				}else {
+					tmp1.removeAll(oldTest.getBranchCovered());
+				}
+			}
+		}
+		if(!tmp1.isEmpty() && flag) {
+			finalTests.add(newTest);
+		}
+	}
+}
+\end{lstlisting}
+If a test is the only one to cover a specific path, it is added to  the test-suite.
+This work also in case of empty suite.\\
+If a new test cover the same as another inside the test-suite, then the length or possible extra path covered by the tests decide for who will stay in the test-suite.
+\subsection{Pretty printing}\label{subsec:prettyprinting}
+Final test-suite has to be printed out in order to be executed.
+Then all the data collected before are used to recreate the formula to instantiate and execute methods in a JUnit fashion.
