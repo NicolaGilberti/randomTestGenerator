@@ -23,6 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Pattern;
 import java.util.Iterator;
 import java.io.FileWriter;
+import java.lang.Math;
 
 import spoon.reflect.declaration.CtClass;
 
@@ -356,12 +357,16 @@ public class SecThread extends Thread {
 			 */
 			long startTime = this.endTime - this.execTime;
 			double lapse = (double)(System.currentTimeMillis() - startTime) / (double)this.execTime;
-			double timePerc = lapse * 100;
+			int timePerc = (int)Math.round(lapse * 100);
+			if(timePerc>100){
+				timePerc=100;
+			}
 			this.covDurTim.addAll(test.getBranchCovered());
 			double covPerc = (double)this.covDurTim.size() / (double)this.nBranch;
-			String percentage = "time passed: " + timePerc + "% actual coverage: " + covPerc + "\n";
+			int covPercI = (int)Math.round(covPerc * 100);
+			String percentage = "time passed: " + timePerc + "% actual coverage: " + covPercI + "\n";
 			System.err.println(percentage);
-			/*try {
+			try {
 			if(this.id==1) {
 				FileWriter p = new FileWriter("covFile.txt",false);
 				p.write("");
@@ -372,7 +377,7 @@ public class SecThread extends Thread {
 			p.close();
 			}catch(Exception e){
 				System.err.println("Error inn the file");
-			}*/
+			}
 			/*
 				change the edgeset with the data taken from the execution
 			*/

@@ -47,13 +47,18 @@ public class TestCaseGenerator {
 	 * @return the string of the JUnit class
 	 */
 	public String generateTestCaseString() {
-		String s= "import org.junit.Test;\n" + importList + "\n";
+		String s= "import org.junit.Test;\n" +
+			"import static org.junit.Assert.*;\n"+
+			"import java.util.List;\n"+
+			"import java.util.Collection;\n"+
+			"import java.util.Arrays;\n"+
+			importList + "\n";
 
 		s += "public class " + className + "{\n\n";
 
 		for (int i = 0; i < testList.size(); i++) {
 			TestCase t = testList.get(i);
-			s+= t.TestFunction(i) + "\n";
+			s+= t.TestFunction(i) + "\n\n";
 		}
 
 		s += "}";

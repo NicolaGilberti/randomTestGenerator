@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.*;
+import java.lang.Math;
 
 import org.apache.commons.io.FileUtils;
 import org.jgrapht.graph.DirectedPseudograph;
@@ -106,7 +107,7 @@ public class MainProgram {
 		lineToCover = appProps.getProperty("LineToCover");
 		separator = appProps.getProperty("Separator",":");
 
-		outputDir = appProps.getProperty("OutputDir","finalResult");
+		outputDir = appProps.getProperty("OutputDir","webrandomgenerator-report");
 		// Import navigation graph
 		pathToGraphFile = appProps.getProperty("GraphDirPath") + fileSeparator + appProps.getProperty("GraphName") + ".txt";
 		GraphImporter graphImporter = new GraphImporter(pathToGraphFile);
@@ -173,10 +174,10 @@ public class MainProgram {
 				fileClassPathPack += fileSeparator + packagePath;
 			}
 			FileUtils.deleteDirectory(new File("spoon"));
-			File jf = new File(fileJavaPathPack + fileSeparator + className + "Instr.java");
+			/*File jf = new File(fileJavaPathPack + fileSeparator + className + "Instr.java");
 			File cf = new File(fileClassPathPack + fileSeparator + className + "Instr.class");
 			FileUtils.deleteQuietly(jf);
-			FileUtils.deleteQuietly(cf);
+			FileUtils.deleteQuietly(cf);*/
 		}catch(Exception e) {
 			System.err.println("error removing tempor spoon dir " + e);
 		}
@@ -316,6 +317,6 @@ public class MainProgram {
 		for(TestCase t : ft) {
 			num.addAll(t.getBranchCovered());
 		}
-		System.out.println("Total coverage of the tests is => " + num.size()*1.0/den*1.0);
+		System.out.println("Total coverage of the tests is => " + (int)Math.round(num.size()*1.0/den*1.0*100));
 	}
 }

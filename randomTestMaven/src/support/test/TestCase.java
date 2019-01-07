@@ -116,6 +116,17 @@ public class TestCase {
 			s+= this.methodList.get(u).toString(u);
 			s+= "\n";
 		}
+		//assertion
+		String tmp="List<Integer> listToAssert = Arrays.asList(";
+		for(Integer kk : this.branchCovered){
+			tmp+= kk + ", ";
+		}
+		tmp = tmp.substring(0,tmp.length()-2);
+		tmp+= ");";
+		s+= tmp + "\n";
+		s+= "assertTrue(obj.getChecker().containsAll(listToAssert));\n";
+		//reset App state for possible future tests
+		s+= "po_utils.ResetAppState.reset();\n";
 		
 		s+= "\t}";
 		

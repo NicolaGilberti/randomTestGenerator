@@ -5,14 +5,20 @@ ITERATIONS=$1
 FILE=$2
 #to set a specific file for the output
 OUTPUT=$3
-#set the testsuite path
-TestSuitePath=./finalResult
-fileTest=Tester
+#set the testsuite names given by the program
+reportDir=./webrandomgenerator-report
+fileTest=Tester.java
+covFileTmp=./covFile.txt
+#extra variables
+covFilesDir=$reportDir/coveragefiles/
+covFileName=covFile-
+testSuiteDir=$reportDir/testsuites/
+testSuiteName=TestSuite
 #Set the path to the Program
 jar=/home/foobar/.m2/repository/randomTestMaven/randomTestMaven/0.0.1/randomTestMaven-0.0.1.jar
 #the path of the project to test (if different from . -> current dir)
 dir_under_test=.
-#the program need its proper properties file, so set the path to it (insert the correct name)
+#the program need its proper properties file, so set the path to it
 prop=/home/foobar/workspace/randomTestGenerator/randomTestMaven/program____________.properties
 cp $prop $dir_under_test/program.properties
 #evosuite/selenium/idk generate a .ser file. Set the path of that file
@@ -31,8 +37,9 @@ if [[ -z $OUTPUT ]]; then
 fi
 #clean the file, to be sure that we are not collecting extra wrong data
 cp /dev/null $OUTPUT
-
-rm -rf $TestSuitePath
+rm -rf $reportDir
+mkdir -p $covFilesDir
+mkdir -p $testSuiteDir
 #loop for the iterations required
 COUNT=0
 while [ $COUNT -lt $ITERATIONS ]
@@ -44,16 +51,21 @@ do
 	java  -cp $jar:$classpath primary.MainProgram $* >> $OUTPUT
 	sleep 5
 	#only to close the chrome tab, to avoid the opening of n tabs
-	killall chrome
-	cp $TestSuitePath/$fileTest.java $TestSuitePath/$fileTest-$COUNT.java
-	rm $TestSuitePath/$fileTest.java
+	#killall chrome
+	TestExecutedCounterH=$(wc -l < $covFileTmp)
+	echo Test cases executed: $TestExecutedCounterH >> $covFileTmp
+	cp $covFileTmp $covFilesDir$covFileName$COUNT.txt
+	cp $reportDir/$fileTest $testSuiteDir$testSuiteName$COUNT.java
+	sed -i -e 's/public class Tester/public class '$testSuiteName$COUNT'/g' $testSuiteDir$testSuiteName$COUNT.java
+	rm $reportDir/$fileTest
+	rm $covFileTmp
 done
 
 echo $'\n'The results of the $ITERATIONS tests:
 cat $OUTPUT
-RESAVG=$(grep -o [0-9]*\\.[0-9]* $OUTPUT | awk '{ SUM += $1} END { printf "\nThe AVG is=> %0.16f\n",SUM/'$ITERATIONS' }')
-RESMIN=$(grep -o [0-9]*\\.[0-9]* $OUTPUT | awk 'BEGIN{min=1}{if ($1<0+min) min=$1} END { printf "\nThe MIN is=> %0.16f\n",min }')
-RESMAX=$(grep -o [0-9]*\\.[0-9]* $OUTPUT | awk 'BEGIN{max=0}{if ($1>0+max) max=$1} END { printf "\nThe MAX is=> %0.16f\n",max }')
+RESAVG=$(grep -o [0-9]* $OUTPUT | awk '{ SUM += $1} END { printf "\nThe AVG is=> %f\n",SUM/'$ITERATIONS' }')
+RESMIN=$(grep -o [0-9]* $OUTPUT | awk 'BEGIN{min=1000}{if ($1<0+min) min=$1} END { printf "\nThe MIN is=> %f\n",min }')
+RESMAX=$(grep -o [0-9]* $OUTPUT | awk 'BEGIN{max=0}{if ($1>0+max) max=$1} END { printf "\nThe MAX is=> %f\n",max }')
 echo $RESAVG
 echo $RESMIN
 echo $RESMAX
