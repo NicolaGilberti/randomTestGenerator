@@ -5,12 +5,14 @@ public class MapValue {
 	private int methodNumber;
 	private int lvlNumber;
 	private int counterNumber;
+	private int varDepthRef;
 	
-	public MapValue(Object o, int u, int lvl, int count) {
+	public MapValue(Object o, int u, int lvl, int count, int vdr) {
 		this.value = o;
 		this.methodNumber = u;
 		this.lvlNumber = lvl;
 		this.counterNumber = count;
+		this.varDepthRef = vdr;
 	}
 	
 	/**
@@ -61,7 +63,18 @@ public class MapValue {
 	public void setCounterNumber(int counterNumber) {
 		this.counterNumber = counterNumber;
 	}
-	
+	/**
+	 * @return the varDepthRef
+	 */
+	public int getVarDepthRef() {
+		return varDepthRef;
+	}
+	/**
+	 * @param varDepthRef the counterNumber to set
+	 */
+	public void setVarDepthRef(int varDepthRef) {
+		this.varDepthRef = varDepthRef;
+	}
 	/**
 	 * toString
 	 */
@@ -69,7 +82,7 @@ public class MapValue {
 	public String toString() {
 		String s="";
 		
-		s += this.value + ":" + this.methodNumber + ":" + this.lvlNumber + ":" + this.counterNumber;
+		s += this.value + ":" + this.methodNumber + ":" + this.lvlNumber + ":" + this.counterNumber + ":" + this.varDepthRef;
 		
 		return s;
 	}

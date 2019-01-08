@@ -343,7 +343,7 @@ public class SpoonMod {
 						valClass = inst.getType(s);
 					}
 					//System.out.println("\t" + value);
-					inst.getrG().addToMap(new MapValue(value,-1,-1,-1));
+					inst.getrG().addToMap(new MapValue(value,-1,-1,-1,-1));
 				}
 			}else {
 				//manage enum

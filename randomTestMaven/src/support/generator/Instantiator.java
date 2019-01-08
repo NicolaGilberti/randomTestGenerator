@@ -76,7 +76,7 @@ public class Instantiator {
 	 * @param lvl the depth level of the function parameter
 	 * @return a ParamSaver containing all the value required for future works
 	 */
-	public ParamSaver istantiatedArray(Object[] obj, Class<?>[] parameters, int lvl, int u) {
+	public ParamSaver istantiatedArray(Object[] obj, Class<?>[] parameters, int lvl, int u, int ref) {
 		String s="";
 		Random random;
 		String temp;
@@ -109,49 +109,49 @@ public class Instantiator {
 				switch (clazNameTmp){
 				case "boolean":
 					obj[i] = Class.forName(temp).getConstructor(boolean.class).newInstance(true);
-					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i));
+					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i,ref));
 					obj[i] = mV.getValue();
 					s += mV;
 					break;
 				case "int":
 					obj[i] = Class.forName(temp).getConstructor(int.class).newInstance(1);
-					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i));
+					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i,ref));
 					obj[i] = mV.getValue();
 					s += mV;
 					break;
 				case "long":
 					obj[i] = Class.forName(temp).getConstructor(long.class).newInstance(1L);
-					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i));
+					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i,ref));
 					obj[i] = mV.getValue();
 					s += mV;
 					break;
 				case "short":
 					obj[i] = Class.forName(temp).getConstructor(short.class).newInstance(1);
-					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i));
+					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i,ref));
 					obj[i] = mV.getValue();
 					s += mV;
 					break;
 				case "float":
 					obj[i] = Class.forName(temp).getConstructor(float.class).newInstance(0.0f);
-					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i));
+					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i,ref));
 					obj[i] = mV.getValue();
 					s += mV;
 					break;
 				case "double":
 					obj[i] = Class.forName(temp).getConstructor(double.class).newInstance(0.0d);
-					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i));
+					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i,ref));
 					obj[i] = mV.getValue();
 					s += mV;
 					break;
 				case "char":
 					obj[i] = Class.forName(temp).getConstructor(char.class).newInstance('a');
-					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i));
+					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i,ref));
 					obj[i] = mV.getValue();
 					s += mV;
 					break;
 				case "java.lang.String":
 					obj[i] = Class.forName(temp).newInstance();
-					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i));
+					mV = rG.setValue(this, new MapValue(obj[i],u,lvl,i,ref));
 					obj[i] = mV.getValue();
 					s += mV;
 					break;
@@ -178,7 +178,7 @@ public class Instantiator {
 					Integer maxOccurredElem = randList.stream().reduce(BinaryOperator.maxBy((o1, o2) -> Collections.frequency(randList, o1) - Collections.frequency(randList, o2))).orElse(null);
 
 					Object valuezz = enumOptions[maxOccurredElem];
-					mV = new MapValue(valuezz,u,lvl,i);
+					mV = new MapValue(valuezz,u,lvl,i,ref);
 					if(rG.map.containsKey(temp)){
 						rG.addToMap(mV);
 					}else {
@@ -226,7 +226,7 @@ public class Instantiator {
 								try {
 									req = new Object[parVal];
 									Class<?>[] paramType = targetC.getParameterTypes();
-									ParamSaver k = istantiatedArray(req, paramType, lvl+1, u);
+									ParamSaver k = istantiatedArray(req, paramType, lvl+1, u, u);
 									Object[] pippo = k.getParamArray();
 									obj[i] = Class.forName(temp).getConstructor(paramType).newInstance(pippo);
 									s += k.getParamString();
@@ -240,10 +240,10 @@ public class Instantiator {
 							}
 						}while(flag);
 						if(rG.map.containsKey(temp)){
-							rG.addToMap(new MapValue(obj[i],u,lvl,i));
+							rG.addToMap(new MapValue(obj[i],u,lvl,i,ref));
 						}else {
 							ArrayList<MapValue> value = new ArrayList<MapValue>();
-							value.add(new MapValue(obj[i],u,lvl,i));
+							value.add(new MapValue(obj[i],u,lvl,i,ref));
 							rG.map.put(temp, value);
 						}
 					}else {
@@ -252,9 +252,9 @@ public class Instantiator {
 						int valueSize = value.size();
 						int tempVal = random.nextInt(valueSize);
 						MapValue nmv= value.get(tempVal);
-						if(nmv.getMethodNumber()==-1 && nmv.getLvlNumber()==-1 && nmv.getCounterNumber()==-1) {
+						if(nmv.getMethodNumber()==-1 && nmv.getLvlNumber()==-1 && nmv.getCounterNumber()==-1 && nmv.getVarDepthRef()==-1) {
 							value.remove(nmv);
-							MapValue mvT = new MapValue(nmv.getValue(),u,lvl,i);
+							MapValue mvT = new MapValue(nmv.getValue(),u,lvl,i,ref);
 							rG.addToMap(mvT);
 							s += mvT;
 						}else {

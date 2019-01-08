@@ -38,7 +38,7 @@ public class RandomGenerator {
 			}else {
 				int tempVal = random.nextInt(valueSize);
 				MapValue nmv= value.get(tempVal);
-				if(nmv.getMethodNumber()==-1 && nmv.getLvlNumber()==-1 && nmv.getCounterNumber()==-1) {
+				if(nmv.getMethodNumber()==-1 && nmv.getLvlNumber()==-1 && nmv.getCounterNumber()==-1 && nmv.getVarDepthRef()==-1) {
 					value.remove(nmv);
 					obj.setValue(nmv.getValue());
 					addToMap(obj);

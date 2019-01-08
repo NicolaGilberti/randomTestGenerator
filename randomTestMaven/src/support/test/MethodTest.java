@@ -93,7 +93,7 @@ public class MethodTest {
 	 * @param u an id value used to return a string composed properly without any inconsistencies in the variables
 	 * @return a String formated for a JUnit test plus a counter for the toSting method
 	 */
-	private Object[] levelVisitor(String param, int lvl, int u){
+	private Object[] levelVisitor(String param, int lvl, int u, int ref){
 		int counter = 0;
 		int cont = 0;
 		String s = "";
@@ -107,7 +107,7 @@ public class MethodTest {
 		for(int qwe=1; qwe<res.length; qwe++) {
 			String token = res[qwe];
 			if(token.contains("#")) {
-				Object[] obj = this.levelVisitor(token, lvl+1, u);
+				Object[] obj = this.levelVisitor(token, lvl+1, u, u);
 				s += obj[0];
 				int max = token.indexOf(':');
 				String variables="";
@@ -119,12 +119,12 @@ public class MethodTest {
 				int counter2 = (int)obj[1];
 				for(int x=0; x<counter2 ; x++) {
 					if(x != counter2-1) {
-						variables+= "var" + u + (lvl+1) + x + ",";
+						variables+= "var" + u + (lvl+1) + x + u +",";
 					}else {
-						variables+= "var" + u + (lvl+1) + x;
+						variables+= "var" + u + (lvl+1) + x + u;
 					}
 				}
-				s+= tab + clazz + " var" + u + lvl + counter++ + " = new " + clazz + "(" + variables + ");\n";
+				s+= tab + clazz + " var" + u + lvl + counter++ + ref + " = new " + clazz + "(" + variables + ");\n";
 			}else {
 				s+=tab;
 				String[] miniTokens = token.trim().split(":");
@@ -138,13 +138,20 @@ public class MethodTest {
 					int mtN = u;
 					int mtL = lvl;
 					int mtC = counter;
+					int mtR = ref;
 					if(miniTokens.length>2) {
 						mtN = Integer.parseInt(miniTokens[2]);
 						mtL = Integer.parseInt(miniTokens[3]);
 						mtC = Integer.parseInt(miniTokens[4]);
+						mtR = Integer.parseInt(miniTokens[5]);
+						 /////////////////////
+						// uso mapValue... //
+					   /////////////////////
+						
+						
 					}
-					if(mtN != u || mtL != lvl || mtC != counter) {
-						s+= clazz + " var" + u + lvl + counter++ + " = var" + mtN + mtL + mtC + ";\n";
+					if(mtN != u || mtL != lvl || mtC != counter || mtR != ref) {
+						s+= clazz + " var" + u + lvl + counter++ + ref + " = var" + mtN + mtL + mtC + mtR +";\n";
 					}else {
 						if(claz.contains("String") && !value.equals("null")) {
 							value = "\"" + value + "\"";
@@ -159,18 +166,18 @@ public class MethodTest {
 							value += "L";
 						}
 						if(value.contains(claz) && !value.contains("("+claz+")")) {	
-							s+= clazz + " var" + u + lvl + counter++ + " = new " + clazz + "();\n";
+							s+= clazz + " var" + u + lvl + counter++ + ref + " = new " + clazz + "();\n";
 						}else if(!value.equals("")){
 							if(clazGen[0].equals("enum")) {
 								String clazzz = "";
 								for(int qwer=1; qwer<clazGen.length-1; qwer++) {
 									clazzz += clazGen[qwer] + ".";
 								}
-								s+= clazzz + clazz + " var" + u + lvl + counter++ + " = " + value + ";\n";
+								s+= clazzz + clazz + " var" + u + lvl + counter++ + ref + " = " + value + ";\n";
 								
 							}
 							else {
-								s+= clazz + " var" + u + lvl + counter++ + " = " + value + ";\n";
+								s+= clazz + " var" + u + lvl + counter++ + ref + " = " + value + ";\n";
 							}
 						}
 					}
@@ -188,14 +195,14 @@ public class MethodTest {
 	public String toString(int u) {
 		String s = "";
 		
-		Object[] k = this.levelVisitor(this.parameterUsed,1,u);
+		Object[] k = this.levelVisitor(this.parameterUsed,1,u,0);
 		s = (String)k[0];
 		String something = "";
 		for(int w=0; w<(int)k[1]; w++) {
 			if(w != (int)k[1]-1) {
-				something += "var" + u + "1" + w + ",";
+				something += "var" + u + "1" + w + "0,";
 			}else {
-				something += "var" + u + "1" + w;
+				something += "var" + u + "1" + w + "0";
 			}
 		}
 		

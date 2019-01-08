@@ -184,7 +184,7 @@ public class SecThread extends Thread {
 		Object[] tmpp;
 		boolean shish = true;
 		int maxNumMethodsXTest = maxNumMethods+2;
-		try {
+		//try {
 
 			int constrNum = modifiedClass.getConstructors().length;
 			Constructor<?> methodc = modifiedClass.getConstructors()[random.nextInt(constrNum)];
@@ -192,7 +192,7 @@ public class SecThread extends Thread {
 
 			Class<?>[] parametersc = methodc.getParameterTypes();
 			Object[] tmpc = new Object[parametersc.length];
-			ParamSaver kc = inst.istantiatedArray(	tmpc, parametersc, 1, 0);	
+			ParamSaver kc = inst.istantiatedArray(	tmpc, parametersc, 1, 0, 0);	
 			mtc.addParameter(kc.getParamString());
 			mtc.setParamUsed(kc.getParamArray());
 			test.addMethod(mtc);
@@ -210,7 +210,7 @@ public class SecThread extends Thread {
 					Class<?>[] parameters = method.getParameterTypes();
 					tmpp = new Object[parameters.length];
 
-					ParamSaver km = inst.istantiatedArray(tmpp, parameters, 1, methodCounter);
+					ParamSaver km = inst.istantiatedArray(tmpp, parameters, 1, methodCounter, 0);
 					methodCounter++;
 
 					mtm.addParameter(km.getParamString());
@@ -246,7 +246,7 @@ public class SecThread extends Thread {
 				MethodTest mtm = new MethodTest(method);
 				Class<?>[] parameters = method.getParameterTypes();
 				tmpp = new Object[parameters.length];
-				ParamSaver km = inst.istantiatedArray(tmpp, parameters, 1, methodCounter);
+				ParamSaver km = inst.istantiatedArray(tmpp, parameters, 1, methodCounter, 0);
 				methodCounter++;
 
 				mtm.addParameter(km.getParamString());
@@ -319,7 +319,7 @@ public class SecThread extends Thread {
 				//get the arrayList value for the branch coverage
 				Class<?>[] parametersC = methodC.getParameterTypes();
 				Object[] tmpC = new Object[parametersC.length];
-				ParamSaver kC = inst.istantiatedArray(tmpC, parametersC, 1, 0);
+				ParamSaver kC = inst.istantiatedArray(tmpC, parametersC, 1, 0, 0);
 				ArrayList<?> a= new ArrayList<>();
 				try {
 					a = (ArrayList<?>) methodC.invoke(instance, kC.getParamArray());
@@ -333,7 +333,7 @@ public class SecThread extends Thread {
 				//reset the arraylist to clear the memory
 				Class<?>[] parametersS = methodS.getParameterTypes();
 				Object[] tmpS = new Object[parametersS.length];
-				ParamSaver kS = inst.istantiatedArray(tmpS, parametersS, 1, 0);
+				ParamSaver kS = inst.istantiatedArray(tmpS, parametersS, 1, 0, 0);
 				try {
 					methodS.invoke(instance, kS.getParamArray());
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -395,11 +395,11 @@ public class SecThread extends Thread {
 			}
 			//send to primary thread
 			clq.add(test);
-		} catch (IllegalArgumentException e) {
+		/*} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			System.err.println("Errore al test numero "+(id-1)+"\n");
 			test = null;
-		}
+		}**/
 	}
 
 	/**
