@@ -3,6 +3,7 @@ package support.generator;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.List;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,6 +13,10 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.function.*;
 import java.util.Collections;
+
+import org.springframework.context.annotation.*;
+import org.springframework.core.type.filter.*;
+import org.springframework.beans.factory.config.*;
 
 import support.spoon.*;
 
@@ -85,6 +90,8 @@ public class Instantiator {
 		int parVal;
 		Constructor<?> targetC;
 		Object[] req = null;
+		random = new Random();
+		random.setSeed(System.currentTimeMillis());
 		for(int i=0;i<obj.length;i++){
 			//to define different levels (to find token during the string elaboration)
 			s+="#";
@@ -95,17 +102,37 @@ public class Instantiator {
 
 			try {
 				MapValue mV;
-				temp = getType(parameters[i].getName()); 
-				String clazNameTmp = parameters[i].getName();
-				if(parameters[i].isEnum()) {
+				target = parameters[i];
+				temp = getType(target.getName()); 
+				String clazNameTmp = target.getName();
+				ArrayList<String> classSub = new ArrayList();
+				/*
+					Controls on the input class:
+						1.enum -> require a specific 'manager' 
+						2.interface -> it is necessary to find an instantiatable class an then work on this ones
+					*/
+				while(target.isInterface()){
+						ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
+						provider.addIncludeFilter(new AssignableTypeFilter(target));
+						// scan in org.example.package
+						Set<BeanDefinition> components = provider.findCandidateComponents("./");
+						for (BeanDefinition component : components)
+						{
+						    Class cls = Class.forName(component.getBeanClassName());
+						    // use class cls found
+						    classSub.add(cls.getName());
+						}
+						target = Class.forName(classSub.get(random.nextInt(classSub.size())));
+						temp = target.getName();
+						clazNameTmp = temp;
+				}
+				if(target.isEnum()) {
 					clazNameTmp="enum";
 				}
-				else {
+				else{
 					//On the enum we cannot put this value like in the other cases because in the name there is a not accepted symbol
-					s += parameters[i].getName() + ":";
+					s += target.getName() + ":";
 				}
-				random = new Random();
-				random.setSeed(System.currentTimeMillis());
 				switch (clazNameTmp){
 				case "boolean":
 					obj[i] = Class.forName(temp).getConstructor(boolean.class).newInstance(true);
@@ -167,7 +194,7 @@ public class Instantiator {
 					for(int qwer=0; qwer<enumRootClass.length; qwer++) {
 						enumRootClassStr += enumRootClass[qwer] + ".";
 					}
-					Object[] enumOptions = parameters[i].getEnumConstants();
+					Object[] enumOptions = target.getEnumConstants();
 					int enumOptionsLenght = enumOptions.length;
 
 					Integer[] randArr = new Integer[11];
@@ -196,7 +223,7 @@ public class Instantiator {
 					break;
 				default:
 					//try {
-					target = Class.forName(temp);
+					//target = Class.forName(temp);
 					/*}catch(ClassNotFoundException c) {
 						c.printStackTrace();
 						target = Class.forName("Id");
@@ -218,10 +245,18 @@ public class Instantiator {
 						boolean flag=true;
 						do{
 							flag=false;
-							maxVal = target.getConstructors().length;
-							int ran = random.nextInt(maxVal);
-							targetC = target.getConstructors()[ran];
-							parVal = targetC.getParameterTypes().length;
+							int ran=0;
+							try{
+								maxVal = target.getConstructors().length;
+								ran = random.nextInt(maxVal);
+							}catch(IllegalArgumentException e){
+								System.err.println(target.getName() + "\n" + target.toGenericString());
+								e.printStackTrace();
+							}
+
+								targetC = target.getConstructors()[ran];
+								parVal = targetC.getParameterTypes().length;
+							
 							if(parVal!=0) {
 								try {
 									req = new Object[parVal];

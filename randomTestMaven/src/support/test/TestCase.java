@@ -125,8 +125,6 @@ public class TestCase {
 		tmp+= ");";
 		s+= tmp + "\n";
 		s+= "assertTrue(obj.getChecker().containsAll(listToAssert));\n";
-		//reset App state for possible future tests
-		s+= "po_utils.ResetAppState.reset();\n";
 		
 		s+= "\t}";
 		

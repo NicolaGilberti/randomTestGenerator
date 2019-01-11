@@ -144,11 +144,6 @@ public class MethodTest {
 						mtL = Integer.parseInt(miniTokens[3]);
 						mtC = Integer.parseInt(miniTokens[4]);
 						mtR = Integer.parseInt(miniTokens[5]);
-						 /////////////////////
-						// uso mapValue... //
-					   /////////////////////
-						
-						
 					}
 					if(mtN != u || mtL != lvl || mtC != counter || mtR != ref) {
 						s+= clazz + " var" + u + lvl + counter++ + ref + " = var" + mtN + mtL + mtC + mtR +";\n";
@@ -208,7 +203,11 @@ public class MethodTest {
 		
 		if(this.getException()!=null) {
 			s += "\ttry{\n"
-					+ "\t";
+					+ "\t"; 
+			// i don't want to run methods in case of selenium error, during test, the thrown exception could be different
+			if(this.getException().contains("selenium")){
+				s+="//";
+			}
 		}
 		s += "\t";
 		

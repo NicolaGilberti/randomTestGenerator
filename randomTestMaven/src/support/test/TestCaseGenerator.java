@@ -47,7 +47,7 @@ public class TestCaseGenerator {
 	 * @return the string of the JUnit class
 	 */
 	public String generateTestCaseString() {
-		String s= "import org.junit.Test;\n" +
+		String s= "import org.junit.*;\n" +
 			"import static org.junit.Assert.*;\n"+
 			"import java.util.List;\n"+
 			"import java.util.Collection;\n"+
@@ -55,6 +55,16 @@ public class TestCaseGenerator {
 			importList + "\n";
 
 		s += "public class " + className + "{\n\n";
+
+		//before method to reset state app before each test and at the end of the testsuite
+		s+="\t@Before\n";
+		s+="\tpublic void SetupEnv(){\n";
+		s+="\t\tpo_utils.ResetAppState.reset();\n";
+		s+="\t}\n\n";
+		s+="\t@AfterClass\n";
+		s+="\tpublic static void resetEnv(){\n";
+		s+="\t\tpo_utils.ResetAppState.reset();\n";
+		s+="\t}\n\n";
 
 		for (int i = 0; i < testList.size(); i++) {
 			TestCase t = testList.get(i);
