@@ -2,61 +2,106 @@
 This chapter cover a big part of the program because the whole test generation process start from the secondary thread~\ref{sec:MSArch}, pass through the generator~\ref{sec:pig} and end in the next subsections~\ref{subsec:creation}~\ref{subsec:prettyprinting}.\\
 This program depends on an external service that given a graph representing the class under test, an ending point and a length, it return a random path of at most the size given that finish in the target.
 Given all the proper data collected by the main thread, see~\ref{sec:MSArch} and~\ref{ch:usage}, the second thread recreate a possible correct sequence of action that can be performed on the class.
-This operation is executed before the creation of each thread.\\
+This operation is executed before the creation of each test.\\
 Before the creation of a test, the sequence generated is manipulated for the next steps.
 This sequence consist in a list of strings where each string is the name of the method to execute, the node in which it can be executed and the ending node if the method run throwing no error.\\
 For each method, an instance of a~\href{\projRootLink/support/test/MethodTest.java}{MethodTest class} is instantiated, and thanks to that, all the supporting variable are created.
 In this class there is the list of the attributes that are generated with the random generator~\ref{sec:tg}, and all the data to reconstruct them.
-Those values are created once for each method and they are maintained until they need.\\
+Those values are created once for each method and they are maintained until they need.
 Then, the test creation start.
 \subsection{Creation}\label{subsec:creation}
 Till now there is a list of methods and for each of them there is a possible input.
-Here can be done extra controls on the list and on their input to reject or accept the list as a possible test case.\\
+\begin{lstlisting}[caption={Check-test method},label={lst:checkForFinalTestSuite}]% Start your code-block
+
+private static void AddToFinalTestCase(TestCase newTest) {
+  HashSet<Integer> tmp1 = newTest.getBranchCov();
+  boolean flag=true;
+  if(finalTests.isEmpty()) {
+	finalTests.add(newTest);
+  }else {
+	for(int i=0;i<finalTests.size();i++) {
+      TestCase oldTest = finalTests.get(i);
+	  if(sameValues(oldTest.getBranchCov(),newTest.getBranchCov())) {
+		flag=false;
+		if(oldTest.getMethList().size()>newTest.getMethList().size()) {
+		  finalTests.set(i, newTest);
+		}
+		break;
+	  }else {
+		if(newTest.getBranchCov().containsAll(oldTest.getBranchCov())) {
+		  finalTests.set(i, newTest);
+		  flag=false;
+		  break;
+		}else if(oldTest.getBranchCov().containsAll(newTest.getBranchCov())){
+		  flag=false;
+		  break;
+		}else {
+		  tmp1.removeAll(oldTest.getBranchCov());
+		}
+	  }
+	}
+	if(!tmp1.isEmpty() && flag) {
+	  finalTests.add(newTest);
+	}
+  }
+}
+\end{lstlisting}
+Here can be done extra controls on the list and on their input to reject or accept the list as a possible test case.
 After that an instance of the instrumented class is generated and the method's list is executed in order.\\
 When an error is thrown, the data is collected and saved for the next step~\ref{subsec:prettyprinting}.
 Executing the methods, instrumentation can be invoked and, at the end of the list execution, all the covered element are saved.\\
-Each ran list, its input and outcomes, are then considered as a Test-case.\\
+Each ran list, its input and outcomes are then considered as a Test-case.\\
 This blob of data contains everything that permit the validation of the test and also the re-execution of it, maintaining the same outputs: test-case are idem-potent.\\
 Each test as to be checked in order to add it or not to the final test-suite.
-The final test-suite is then created dynamically.
-\begin{lstlisting}[caption={Check test method},label={lst:checkForFinalTestSuite}]% Start your code-block
-
-private static void AddToFinalTestCase(TestCase newTest) {
-	HashSet<Integer> tmp1 = newTest.getBranchCovered();
-	boolean flag=true;
-	if(finalTests.isEmpty()) {
-		finalTests.add(newTest);
-	}else {
-		for(int i=0;i<finalTests.size();i++) {
-			TestCase oldTest = finalTests.get(i);
-			if(sameValues(oldTest.getBranchCovered(), newTest.getBranchCovered())) {
-				flag=false;
-				if(oldTest.getMethodList().size()>newTest.getMethodList().size()) {
-					finalTests.set(i, newTest);
-				}
-				break;
-			}else {
-				if(newTest.getBranchCovered().containsAll(oldTest.getBranchCovered())) {
-					finalTests.set(i, newTest);
-					flag=false;
-					break;
-				}else if(oldTest.getBranchCovered().containsAll(newTest.getBranchCovered())){
-					flag=false;
-					break;
-				}else {
-					tmp1.removeAll(oldTest.getBranchCovered());
-				}
-			}
-		}
-		if(!tmp1.isEmpty() && flag) {
-			finalTests.add(newTest);
-		}
-	}
-}
-\end{lstlisting}
+The final test-suite is then created dynamically~\ref{lst:checkForFinalTestSuite}.\\
 If a test is the only one to cover a specific path, it is added to  the test-suite.
 This work also in case of empty suite.\\
 If a new test cover the same as another inside the test-suite, then the length or possible extra path covered by the tests decide for who will stay in the test-suite.
 \subsection{Pretty printing}\label{subsec:prettyprinting}
 Final test-suite has to be printed out in order to be executed.
-Then all the data collected before are used to recreate the formula to instantiate and execute methods in a JUnit fashion.
+Then all the data collected before are used to recreate the formula to instantiate and execute methods in a JUnit fashion.\\
+As in a Java class, the first area is about the imports.
+This is recreated thanks to the import that are inside the Instrumented class, which are managed automatically by Spoon, if it is setted accordingly.
+\begin{lstlisting}[caption={How to let Spoon automatically manage imports during class generation},label={lst:autoImportTrue}]% Start your code-block
+
+factory.getEnvironment().setAutoImports(true);
+\end{lstlisting}
+The same auto-generated import list is then recovered and used in the printing part.
+After that, a \emph{Tester} class is generated and the real tests are written inside.
+Each single test start with a common pattern that is as following.
+First it came the JUnit annotation used to identify tests, \emph{@Test}.
+As second element, a comment that give some information about the test, like the coverage.
+Third element is the test's header followed by the instantiation code for the class under test.
+\begin{lstlisting}[caption={Example test case, first part},label={lst:testCAseFirstPart}]% Start your code-block
+
+public class Tester{
+	
+	@Test
+	//test case 2 coverage: 0.07906976744186046
+	//branch covered: [96, 161, 98, 163, 133, 201, 170, 171, 109, 206, 112, 49, 178, 88, 121, 122, 156]
+	public void test0(){
+		main.ClassUnderTest obj = new main.ClassUnderTest();
+		...
+\end{lstlisting}
+Here, tests could differ: if the class has multiple constructors, the instantiation could be preceded by extra variables depending on the constructor parameter requirements.
+\begin{lstlisting}[caption={example of some possible printing cases},label={lst:printMethodComplex}]% Start your code-block
+
+		int var3920 = 1599533343;
+	Id var3910 = new Id(var3920);
+	WidgetFeedTitle var3911 = WidgetFeedTitle.PAGEKITNEWS;
+	WidgetFeedUrl var3912 = WidgetFeedUrl.PAGEKIT;
+		int var3920 = var120;
+	WidgetFeedNumberPosts var3913 = new WidgetFeedNumberPosts(var3920);
+	WidgetFeedPostContent var3914 = WidgetFeedPostContent.SHOWALLPOSTS;
+try{
+	obj.editFeedWidgetDashboardContainerPage(var3910,var3911,var3912,var3913,var3914);
+}catch(po_utils.NotInTheRightPageObjectException e){}
+\end{lstlisting}
+Now each test differ for the method lists and the executions outputs, however the printer is able to manage all the variables for each instantiation and also try-catch block when methods thrown errors.\\
+In the listing~\ref{lst:printMethodComplex} we can see how cases similar to the example at the end of~\ref{sec:pig} are managed.\\
+Tabulation is used to define the depth level of the variables. For example at line 1 there is a 2-Tab variable meaning that it this is required for a 1-Tab variable instantiation, which is in line 2.\\
+All the 1-Tab depth variables are the input for the method in line 9.\\
+During the execution, this method generate a \emph{NotInTheRightPageObjectException} so the test take care of that with a try-catch block around it.\\
+Another element is the reference to an old variable in line 5.
+The test end with an assertion, that check the correct generation of the test, checking if the branch covered are effectively executed by the test.\\
+This can be done because the instrumentation during tests still work and the list of executed branch is maintained, so the equality can be assessed.\\

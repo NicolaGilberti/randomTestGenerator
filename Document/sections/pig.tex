@@ -12,6 +12,7 @@ When an older value is chosen, the data to link the two references are arranged 
 On the other case, a random value is required, and the Random~\cite{rand} class enter in action.\\
 For some primitives, this dependency is able to generate directly a value, while in other cases an extra work is necessary.
 In fact, in case of int, float, long, double, and boolean, there are already functions.
+%\lstset{language=XML} 
 \begin{lstlisting}[caption={Random default generator},label={lst:genDef}]% Start your code-block
 
 case "java.lang.Integer":
@@ -89,3 +90,18 @@ Clazz2 has only the default empty constructor, thus Reflection can instantiate i
 Now there is the backtrack on the recursion and the Clazz can be instantiated with the constructor chosen and the input variables created just before.\\
 With this approach the program is able to instantiate any kind of object, which are referenced in the environment, that are required for tests.\\
 As an example of the environment requirement, in case of a class X is required to be instantiated and its source is not in the class-path, the instantiation fail and the creation of tests \emph{is} compromised.
+Until now, the program has take care only of 'directly' instantiable objects, avoiding Interfaces.\\
+The management of those classes need an extra work, that consist in finding one of its sub-classes that can be instantiate in its place.\\
+The operation is done filtering all the classes related to the interface's project and searching for \emph{Beans} that extend the class.\\
+\begin{lstlisting}[caption={how to find a sub-class of an interface},label={lst:interfaceMngmnt}]% Start your code-block
+
+ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
+provider.addIncludeFilter(new AssignableTypeFilter(target));
+Set<BeanDefinition> components = provider.findCandidateComponents("./");
+for (BeanDefinition component : components){
+	Class cls = Class.forName(component.getBeanClassName());
+	// use class cls found
+}
+\end{lstlisting}
+The \emph{ClassPathScanningCandidateComponentProvider} and \emph{BeanDefinition} are taken from the Spring Framework~\cite{springFramework}.\\
+Interfaces are commonly used to make reference of it that refers to the Object of its implementing class, and this is why the program manage them. 5

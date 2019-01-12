@@ -1,20 +1,125 @@
 \chapter{Usage}\label{ch:usage}
-How to use the program.\\
-Maven command but also...
+This chapter explain all the features that are necessary for the project to run.\\
+Specifically it will show some \emph{not} well-known tags in the POM, and the properties file necessary for the Environment.\\
+The project on \href{\projRoot}{Github} contains also a .sh script with an example of how the program can be runned.
 \section{Project Object Model}\label{sec:pom}
-POM.xml that define all the dependencies, how to set it properly.
-\section{Properties}\label{sec:prop}
-What is a Properties file, followed by an explanation of the variables.
+The POM contains information about the project and various configuration detail used by Maven to build the project.\\
+To compile classes at runtime, a specific \emph{JDK} library has to be imported as a dependency inside the project.\\
+Because it depends on \emph{JDK} and so on the machine architecture, a \emph{<profile>} tag is necessary to identify all the possible options, to maintain the code independent from the machine.
+\begin{lstlisting}[language=XML,caption={Windows default profile for jdk lib},label={lst:winToolsJar}]% Start your code-block
 
-
-\lstset{language=Java}          % Set your language (you can change the language for each code-block optionally)
-\begin{lstlisting}[caption={Testing how to print code!}]  % Start your code-block
-File root2 = new File(filePath);
-File sourceFile2 = new File(root2, fileName+"Instr.java");
-Files.write(sourceFile2.toPath(), k.getBytes(StandardCharsets.UTF_8));
-
-String[] source = { "-d",destDirectory,"-cp",".;"+classpath,new String(filePath + "/" + fileName + "Instr.java")};
-ByteArrayOutputStream baos= new ByteArrayOutputStream();
-com.sun.tools.javac.Main.compile(source);
+<profile>
+	<id>windows_profile</id>
+	<activation>
+		<os>
+			<family>Windows</family>
+		</os>
+	</activation>
+	<properties>
+		<toolsjar>${java.home}\..\lib\tools.jar</toolsjar>
+	</properties>
+</profile>
 \end{lstlisting}
-\newpage
+There are specific path for each OS type, and Maven accept only specific \href{http://maven.apache.org/enforcer/enforcer-rules/requireOS.html}{\emph{OS family}}.\\
+\emph{<toolsjar>} is an ad-hoc tag created to define a new property, in this case the path to the tools.jar lib.\\
+This variable will be used during a plugin execution.\\
+In the next listing~\ref{lst:instToolsJar}, there are few element to consider.
+The phase in which this operation work is decidable by the programmer, in this case the \emph{install} phase is selected.\\
+The configuration of the library is based on the one installed on your machine, but in this case the \emph{JDK} library has no different option if the OS change.\\
+The version is the value that the runner of the program \emph{MUST} verify.
+\begin{lstlisting}[language=XML,caption={How to 'mvn install' the tools.jar},label={lst:instToolsJar}]% Start your code-block
+
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-install-plugin</artifactId>
+	<version>2.5.2</version>
+	<executions>
+		<execution>
+			<id>install-external</id>
+			<phase>install</phase>
+			<configuration>
+				<file>${toolsjar}</file>
+				<repositoryLayout>default</repositoryLayout>
+				<groupId>com.sun</groupId>
+				<artifactId>tools</artifactId>
+				<version>1.8.0</version>
+				<packaging>jar</packaging>
+				<generatePom>true</generatePom>
+			</configuration>
+			<goals>
+				<goal>install-file</goal>
+			</goals>
+		</execution>
+	</executions>
+</plugin>
+\end{lstlisting}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Properties}\label{sec:prop}
+A .properties is a file extension for files mainly used in Java related technologies to store the configurable parameters of an application.\\
+This project require information about the project that has to analyse and about the specific class to instrument.
+\begin{itemize}
+	\item \textbf{FileName}:\\
+	It is required the name of the Class to test, with the complete package route.\\
+	E.g.:FileName = com.main.ClassUnderTest
+	\item \textbf{ProjectName}:\\
+	It is required the name of the Project that contains the class.
+	\item \textbf{PathToProjectDir}:\\
+	The program has to know where the project you are referring to is placed.
+	\item \textbf{LineToCover}:\\
+	The line-coverage has to know which line to instrument.\\
+	E.g.:LineToCover = 33:47:60:72:85:99:115:132:144:157
+	\item \textbf{Separator}:\\
+	Lines in the previous tag are a list of line numbers divided by a separator.\\
+	The default accepted is ':' but it can be used a different one defining it here.
+	\item \textbf{ExecutionTestTimer}:\\
+	This is the time the algorithm has to find tests.
+	It is in millisecond, so 60000 is equal to 1 minute.
+	\item \textbf{MaxNumberOfMethodXTest}:\\
+	Each test can contain a random number of method calls. This attribute is an upper bound to it.
+	\item \textbf{GraphName}:\\
+	As seen in~\ref{sec:tg}, this project work generating a sequence of method following a graph.
+	\item \textbf{GraphDirPath}:\\
+	The program has to know where the graph you are referring to is placed.
+	\item \textbf{StartNodeGraph}:\\
+	It is the starting point of the graph path analysis.
+	\item \textbf{RequiredPath}:\\
+	The program use reflection to execute the external project written in the first item, but it is not able to know all the dependencies it need.
+\end{itemize}
