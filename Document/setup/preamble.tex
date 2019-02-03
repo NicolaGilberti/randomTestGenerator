@@ -220,6 +220,25 @@
 %\clubpenalty=10000 
 %\raggedbottom
 
+%pseudo-code
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+%box plot
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.8}
+\usepgfplotslibrary{statistics} % LATEX and plain TEX
+\usepgfplotslibrary[statistics] % ConTEXt
+\usetikzlibrary{pgfplots.statistics} % LATEX and plain TEX
+\usetikzlibrary[pgfplots.statistics] % ConTEXt
+%tables
+\usepackage{multirow}
+\usepackage{adjustbox}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %									 %
 % 			Variables area			 %

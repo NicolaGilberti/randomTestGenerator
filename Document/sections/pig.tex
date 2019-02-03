@@ -49,45 +49,45 @@ For example, \emph{"ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefhijklmnopqrstuvwxy
 In the Java language, there are also different types of objects, and one of them is the Enumerator~\cite{enum}.\\
 This program consider Enums as a primitive type and when one is found, it generate one instance of it with a random value accordingly with the requirement of randomness.\\
 With this particular object type, the equal operation work differently and so, the links for the usage of old values are not necessary. 
-\begin{lstlisting}[caption={Equality in enums},label={lst:enumEquality}]% Start your code-block
-
-Enum v1 = Enum.value1;
-Enum v2 = Enum.value1;
-System.out.println( v1 == v2 );
-//True
-\end{lstlisting}
 In case of it is required an instantiation that do not belong to the previous cases, a recursive approach is adopted.
-\begin{lstlisting}[caption={non primitive/enums recursion},label={lst:recursion}]% Start your code-block
-
-int maxVal = targetClass.getConstructors().length;
-int ran = random.nextInt(maxVal);
-Constructor<?> targetC = targetClass.getConstructors()[ran];
-int parVal = targetC.getParameterTypes().length;
-if(parVal!=0) {
-	try {
-		req = new Object[parVal];
-		Class<?>[] paramType = targetC.getParameterTypes();
-		Object[] par = istantiatedArray(req, paramType);
-		obj[i] = Class.forName(targetClassName).getConstructor(paramType).newInstance(par);
-	}catch(NoSuchMethodException  | IllegalArgumentException | InvocationTargetException e) {
-		System.err.println("Instantiator error, it will try again " + e);
-	}
-}else {
-	obj[i] = Class.forName(targetClassName).newInstance();
-}
-\end{lstlisting}
 The 'unknown' class is analysed, collecting all its constructors.
-Then one is randomly picked and, if variables are required to execute the constructor, the random generation process is re-called on each element, line 9 in~\ref{lst:recursion}.
+Then one is randomly picked and, if variables are required to execute the constructor, the random generation process is re-called on each element, line 14 in~\ref{psc:instantiator}.
 If the constructor does not require any input variables, Java reflection can instantiate it directly.\\
 There is also the option in which the class was already instantiated with random values and the randomness choose to take an old option instead of a new one.
 This is automatically done as in the case of primitives, and the links between variables are saved accordingly.
+\begin{algorithm}
+	\caption{Instantiator}\label{psc:instantiator}
+	\begin{algorithmic}[1]
+		\Procedure{instantiate}{params}
+		\ForAll{$params$}
+			\State $param \gets \textit{params.next}$
+			\If {$\textit{isPrimitive(param)}$} 
+				\State $param \gets \Call{instantiateWithReflectionOrOldValue}{}$
+			\ElsIf {$\textit{isEnum(param)}$} 
+				\State $param \gets \Call{pickRandomEnumConstant}{param}$
+			\ElsIf {$\textit{isInterface(param)}$} 
+				\State $param \gets \Call{instantiate}{\textit{param.getSubclass.getParameter()}}$
+			\Else 
+				\If {$\textit{directlyInstantiable(param)}$} 
+					\State $param \gets \Call{instantiateWithReflectionOrOldValue}{}$
+				\Else 
+					\State $requireInstances \gets \Call{instantiate}{\textit{param.getParameter()}}$
+					\State $param \gets \Call{instantiateWithReflectionOrOldValue}{\textit{requireInstances}}$
+				\EndIf
+			\EndIf	
+		\EndFor
+		\Return $params$ \Comment{$All~the~object~instantiated$}
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
 For example, there is a class Clazz that has to be instantiated.
-It is nor primitive neither an enum, so a random constructor is picked.
+It is nor primitive neither an enum, so a random constructor is picked (\ref{psc:instantiator} line 10).
 The one taken require two variables, an int and another unknown class Clazz2.
-So the generator is recalled on the int variable and on the Clazz2.
-About the primitive typos, the program could generate a new value or pick an old ones if exist.
-Clazz2 has only the default empty constructor, thus Reflection can instantiate it directly.
-Now there is the backtrack on the recursion and the Clazz can be instantiated with the constructor chosen and the input variables created just before.\\
+So the generator is recalled on the int variable and on the Clazz2 (\ref{psc:instantiator} line 14).
+About the primitive typos, the program could generate a new value or pick an old ones if exist (\ref{psc:instantiator} line 5).
+Clazz2 has only the default empty constructor, thus Reflection can instantiate it directly (\ref{psc:instantiator} line 12).
+Now there is the backtrack on the recursion(\ref{psc:instantiator} line 15 can now be executed) and the Clazz can be instantiated with the constructor chosen and the input variables created just before.\\
 With this approach the program is able to instantiate any kind of object, which are referenced in the environment, that are required for tests.\\
 As an example of the environment requirement, in case of a class X is required to be instantiated and its source is not in the class-path, the instantiation fail and the creation of tests \emph{is} compromised.
 Until now, the program has take care only of 'directly' instantiable objects, avoiding Interfaces.\\
@@ -104,4 +104,4 @@ for (BeanDefinition component : components){
 }
 \end{lstlisting}
 The \emph{ClassPathScanningCandidateComponentProvider} and \emph{BeanDefinition} are taken from the Spring Framework~\cite{springFramework}.\\
-Interfaces are commonly used to make reference of it that refers to the Object of its implementing class, and this is why the program manage them. 5
+Interfaces are commonly used to make reference of it that refers to the Object of its implementing class, and this is why the program manage them.

@@ -1,0 +1,140 @@
+\section{Dimeshift}
+\begin{table}[H]
+	\centering
+	\caption{Coverage Analysis}
+	\begin{adjustbox}{max width=\textwidth}
+		\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+			& \multicolumn{2}{c|}{Statistic} & \multicolumn{2}{c|}{Wilcoxon rank sum test} & Vargha and Delaney    \\
+		\hline
+			Application & Mean   & Standard Deviation   & W                               & p-value                             & A            			         \\
+		\hline
+			WRGen       & 35     & 6.236096             & \multirow{2}{*}{82}             & \multirow{2}{*}{0.01684}            & \multirow{2}{*}{0.82 (large)}  \\
+		\cline{1-3}
+			Evosuite    & 28.9   & 3.813718             &                                 &                                     &            			   		 \\
+		\hline
+		\end{tabular}
+	\end{adjustbox}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{Test Analysis}
+	\begin{adjustbox}{max width=\textwidth}
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			& \multicolumn{2}{c|}{Statistic} & \multicolumn{2}{c|}{Wilcoxon rank sum test} & Vargha and Delaney    \\
+			\hline
+			Application & Mean   & Standard Deviation   & W                               & p-value                             & A            			         \\
+			\hline
+			WRGen       & 24     & 1.414214             & \multirow{2}{*}{79.5}             & \multirow{2}{*}{0.02631}            & \multirow{2}{*}{0.795 (large)}  \\
+			\cline{1-3}
+			Evosuite    & 21.8   & 2.347576             &                                 &                                     &            			   		 \\
+			\hline
+		\end{tabular}
+	\end{adjustbox}
+\end{table}
+\begin{minipage}{0.5\textwidth}
+	\centering
+	\emph{Coverage Analysis}\\
+	\begin{adjustbox}{totalheight=125px}
+		\begin{tikzpicture}
+		\begin{axis}[
+			boxplot/draw direction=y,
+			x axis line style={opacity=0},
+			axis x line*=bottom,
+			axis y line=left,
+			enlarge y limits,
+			ymajorgrids,
+			xtick={1,2},
+			xticklabels={WRGen, Evosuite},
+		]
+		\addplot+ [
+			boxplot prepared={
+				lower whisker=22, lower quartile=31.25,
+				median=35.50,
+				upper quartile=39.75, upper whisker=42,
+			},
+		] coordinates {}
+		node at
+			(boxplot whisker cs:\boxplotvalue{lower whisker},1.1)
+			{\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
+		node at
+			(boxplot box cs: \boxplotvalue{median},1.15)
+			{\pgfmathprintnumber{\boxplotvalue{median}}}
+		node at
+			(boxplot whisker cs:\boxplotvalue{upper whisker},1.1)
+			{\pgfmathprintnumber{\boxplotvalue{upper whisker}}};
+		\addplot+ [
+			boxplot prepared={
+				lower whisker=24, lower quartile=26.5,
+				median=28,
+				upper quartile=29, upper whisker=36,
+			},
+		] coordinates {}
+		node at
+			(boxplot whisker cs:\boxplotvalue{lower whisker},1.1)
+			{\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
+		node at
+			(boxplot box cs: \boxplotvalue{median},1.1)
+			{\pgfmathprintnumber{\boxplotvalue{median}}}
+		node at
+			(boxplot whisker cs:\boxplotvalue{upper whisker},1.1)
+			{\pgfmathprintnumber{\boxplotvalue{upper whisker}}};
+		\end{axis}
+		\end{tikzpicture}
+	\end{adjustbox}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+	\centering
+	\emph{Test Analysis}\\
+	\begin{adjustbox}{totalheight=125px}
+		\begin{tikzpicture}
+		\begin{axis}[
+		boxplot/draw direction=y,
+		x axis line style={opacity=0},
+		axis x line*=bottom,
+		axis y line=left,
+		enlarge y limits,
+		enlarge x limits=0.2,
+		ymajorgrids,
+		xtick={1,2},
+		xticklabels={WRGen, Evosuite},
+		]
+		\addplot+ [
+		boxplot prepared={
+			lower whisker=21, lower quartile=23.25,
+			median=24,
+			upper quartile=25, upper whisker=26,
+		},
+		] coordinates {}
+		node at
+		(boxplot whisker cs:\boxplotvalue{lower whisker},1.1)
+		{\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
+		node at
+		(boxplot box cs: \boxplotvalue{median},1.15)
+		{\pgfmathprintnumber{\boxplotvalue{median}}}
+		node at
+		(boxplot whisker cs:\boxplotvalue{upper whisker},1.1)
+		{\pgfmathprintnumber{\boxplotvalue{upper whisker}}};
+		\addplot+ [
+		boxplot prepared={
+			lower whisker=18, lower quartile=21,
+			median=21.5,
+			upper quartile=23, upper whisker=26,
+		},
+		] coordinates {}
+		node at
+		(boxplot whisker cs:\boxplotvalue{lower whisker},1.1)
+		{\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
+		node at
+		(boxplot box cs: \boxplotvalue{median},1.2)
+		{\pgfmathprintnumber{\boxplotvalue{median}}}
+		node at
+		(boxplot whisker cs:\boxplotvalue{upper whisker},1.1)
+		{\pgfmathprintnumber{\boxplotvalue{upper whisker}}};
+		\end{axis}
+		\end{tikzpicture}
+
+	\end{adjustbox}
+\end{minipage}
