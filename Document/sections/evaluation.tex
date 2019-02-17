@@ -1,4 +1,16 @@
 \chapter{Empirical evaluation} \label{ch:EmpEvaluation}
+This chapter focus on the evaluation of the proposed algorithm, making a comparison between this and the Evosuite method.
+The comparison is done executing 10 time both programs on the applications and analyzing the output in terms of coverage and number of test executed to define the final testsuite.
+The evaluation is performed by statistical tests.\\
+The distribution of the result cannot be assessed, caused by the random approach followed, so a t-test can't be performed.\\
+However, the \emph{Wilcoxon rank sum test}, also known as Mann–Whitney U test, avoid this limitation.
+It quantifies significant differences between the results, considering a significance level of $0.05$.\\
+To ensure the correctness of results, the analysis use also the \emph{Vargha and Delaney} statistic.
+This test emphasize the magnitude of the differences, given by the U test, between the two algorithms.\\
+The evaluation is also executed limiting the number of methods callable for each unit test, \emph{@Test}, but letting the test suite to grow in number of unit test infinitely.
+The execution time is also restricted, so the program has not to run endlessly and eventually halt when it is reached the total coverage.\\
+Respectively, the maximum number of method is \emph{40} while the time is \emph{60000 ms}, and given as input with the properties file~\ref{sec:prop}.\\
+The next sections show the results for each application under analysis.
 \input{sections/dimeshift.tex}
 \input{sections/pagekit.tex}
 \input{sections/phoenix.tex}
