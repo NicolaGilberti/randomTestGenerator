@@ -1,45 +1,59 @@
-\section{Phoenix}
-\begin{table}[H]
+\begin{minipage}{0.48\textwidth}
 	\centering
-	\caption{Coverage Analysis}
-	\begin{adjustbox}{max width=\textwidth}
-		\begin{tabular}{|c|c|c|c|c|c|}
-		\hline
-			& \multicolumn{2}{c|}{Statistic} & \multicolumn{2}{c|}{Wilcoxon rank sum test} & Vargha and Delaney    \\
-		\hline
-			Application & Mean   & Standard Deviation   & W                               & p-value                             & A            			         \\
-		\hline
-			WRGen       & 59.2     & 8.283853             & \multirow{2}{*}{86.5}             & \multirow{2}{*}{0.00599}            & \multirow{2}{*}{0.865 (large)}  \\
-		\cline{1-3}
-			Evosuite    & 47.9   & 8.238797             &                                 &                                     &            			   		 \\
-		\hline
-		\end{tabular}
-	\end{adjustbox}
-\end{table}
-
-\begin{table}[H]
-	\centering
-	\caption{Test Analysis}
-	\begin{adjustbox}{max width=\textwidth}
-		\begin{tabular}{|c|c|c|c|c|c|}
-			\hline
-			& \multicolumn{2}{c|}{Statistic} & \multicolumn{2}{c|}{Wilcoxon rank sum test} & Vargha and Delaney    \\
-			\hline
-			Application & Mean   & Standard Deviation   & W                               & p-value                             & A            			         \\
-			\hline
-			WRGen       & 9.2     & 1.032796             & \multirow{2}{*}{23.5}             & \multirow{2}{*}{0.04131}            & \multirow{2}{*}{0.235 (large)}  \\
-			\cline{1-3}
-			Evosuite    & 10.3   & 1.567021             &                                 &                                     &            			   		 \\
-			\hline
-		\end{tabular}
-	\end{adjustbox}
-\end{table}
-\begin{minipage}{0.5\textwidth}
-	\centering
-	\emph{Coverage Analysis}\\
-	\begin{adjustbox}{totalheight=125px}
-		\begin{tikzpicture}
-		\begin{axis}[
+	\caption{Phoenix Analysis}
+	\label{fig:phoenix}
+	\begin{minipage}{0.48\textwidth}
+		\caption*{Coverage}
+		\begin{tikzpicture}[scale=0.43]
+			\begin{axis}[
+				boxplot/draw direction=y,
+				x axis line style={opacity=0},
+				axis x line*=bottom,
+				axis y line=left,
+				enlarge y limits,
+				ymajorgrids,
+				xtick={1,2},
+				xticklabels={WRGen, Evosuite},
+			]
+			\addplot+ [
+				boxplot prepared={
+					lower whisker=39, lower quartile=58,
+					median=59.50,
+					upper quartile=65.25, upper whisker=68,
+				},
+			] coordinates {}
+			node at
+				(boxplot whisker cs:\boxplotvalue{lower whisker},1.1)
+				{\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
+			node at
+				(boxplot box cs: \boxplotvalue{median},1.15)
+				{\pgfmathprintnumber{\boxplotvalue{median}}}
+			node at
+				(boxplot whisker cs:\boxplotvalue{upper whisker},1.1)
+				{\pgfmathprintnumber{\boxplotvalue{upper whisker}}};
+			\addplot+ [
+				boxplot prepared={
+					lower whisker=32, lower quartile=43.25,
+					median=50,
+					upper quartile=52.25, upper whisker=58,
+				},
+			] coordinates {}
+			node at
+				(boxplot whisker cs:\boxplotvalue{lower whisker},1.1)
+				{\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
+			node at
+				(boxplot box cs: \boxplotvalue{median},1.1)
+				{\pgfmathprintnumber{\boxplotvalue{median}}}
+			node at
+				(boxplot whisker cs:\boxplotvalue{upper whisker},1.1)
+				{\pgfmathprintnumber{\boxplotvalue{upper whisker}}};
+			\end{axis}
+		\end{tikzpicture}
+	\end{minipage}
+	\begin{minipage}{0.48\textwidth}
+	\caption*{\# Tests}
+		\begin{tikzpicture}[scale=0.43]
+			\begin{axis}[
 			boxplot/draw direction=y,
 			x axis line style={opacity=0},
 			axis x line*=bottom,
@@ -48,92 +62,40 @@
 			ymajorgrids,
 			xtick={1,2},
 			xticklabels={WRGen, Evosuite},
-		]
-		\addplot+ [
+			]
+			\addplot+ [
 			boxplot prepared={
-				lower whisker=39, lower quartile=58,
-				median=59.50,
-				upper quartile=65.25, upper whisker=68,
+				lower whisker=7, lower quartile=9,
+				median=9,
+				upper quartile=9.75, upper whisker=11,
 			},
-		] coordinates {}
-		node at
+			] coordinates {}
+			node at
 			(boxplot whisker cs:\boxplotvalue{lower whisker},1.1)
 			{\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
-		node at
+			node at
 			(boxplot box cs: \boxplotvalue{median},1.15)
 			{\pgfmathprintnumber{\boxplotvalue{median}}}
-		node at
+			node at
 			(boxplot whisker cs:\boxplotvalue{upper whisker},1.1)
 			{\pgfmathprintnumber{\boxplotvalue{upper whisker}}};
-		\addplot+ [
+			\addplot+ [
 			boxplot prepared={
-				lower whisker=32, lower quartile=43.25,
-				median=50,
-				upper quartile=52.25, upper whisker=58,
+				lower whisker=7, lower quartile=10.25,
+				median=11,
+				upper quartile=11, upper whisker=12,
 			},
-		] coordinates {}
-		node at
+			] coordinates {}
+			node at
 			(boxplot whisker cs:\boxplotvalue{lower whisker},1.1)
 			{\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
-		node at
+			node at
 			(boxplot box cs: \boxplotvalue{median},1.1)
 			{\pgfmathprintnumber{\boxplotvalue{median}}}
-		node at
+			node at
 			(boxplot whisker cs:\boxplotvalue{upper whisker},1.1)
 			{\pgfmathprintnumber{\boxplotvalue{upper whisker}}};
-		\end{axis}
+			\end{axis}
 		\end{tikzpicture}
-	\end{adjustbox}
-\end{minipage}
-\begin{minipage}{0.5\textwidth}
-	\centering
-	\emph{Test Analysis}\\
-	\begin{adjustbox}{totalheight=125px}
-		\begin{tikzpicture}
-		\begin{axis}[
-		boxplot/draw direction=y,
-		x axis line style={opacity=0},
-		axis x line*=bottom,
-		axis y line=left,
-		enlarge y limits,
-		ymajorgrids,
-		xtick={1,2},
-		xticklabels={WRGen, Evosuite},
-		]
-		\addplot+ [
-		boxplot prepared={
-			lower whisker=7, lower quartile=9,
-			median=9,
-			upper quartile=9.75, upper whisker=11,
-		},
-		] coordinates {}
-		node at
-		(boxplot whisker cs:\boxplotvalue{lower whisker},1.1)
-		{\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
-		node at
-		(boxplot box cs: \boxplotvalue{median},1.15)
-		{\pgfmathprintnumber{\boxplotvalue{median}}}
-		node at
-		(boxplot whisker cs:\boxplotvalue{upper whisker},1.1)
-		{\pgfmathprintnumber{\boxplotvalue{upper whisker}}};
-		\addplot+ [
-		boxplot prepared={
-			lower whisker=7, lower quartile=10.25,
-			median=11,
-			upper quartile=11, upper whisker=12,
-		},
-		] coordinates {}
-		node at
-		(boxplot whisker cs:\boxplotvalue{lower whisker},1.1)
-		{\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
-		node at
-		(boxplot box cs: \boxplotvalue{median},1.1)
-		{\pgfmathprintnumber{\boxplotvalue{median}}}
-		node at
-		(boxplot whisker cs:\boxplotvalue{upper whisker},1.1)
-		{\pgfmathprintnumber{\boxplotvalue{upper whisker}}};
-		\end{axis}
-		\end{tikzpicture}
-
-	\end{adjustbox}
+	\end{minipage}
 \end{minipage}

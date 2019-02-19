@@ -2,18 +2,109 @@
 This chapter focus on the evaluation of the proposed algorithm, making a comparison between this and the Evosuite method.
 The comparison is done executing 10 time both programs on the applications and analyzing the output in terms of coverage and number of test executed to define the final testsuite.
 The evaluation is performed by statistical tests.\\
-The distribution of the result cannot be assessed, caused by the random approach followed, so a t-test can't be performed.\\
-However, the \emph{Wilcoxon rank sum test}, also known as Mann–Whitney U test, avoid this limitation.
+The distribution of the result cannot be assessed, caused by the random approach followed, so a t-test can't be performed.
+Furthermore the number of tests make useless the use of a t-test or similar parametric analysis.\\
+However, the \emph{Wilcoxon rank sum test}, also known as Mann–Whitney U test, avoid those limitations.
 It quantifies significant differences between the results, considering a significance level of $0.05$.\\
 To ensure the correctness of results, the analysis use also the \emph{Vargha and Delaney} statistic.
-This test emphasize the magnitude of the differences, given by the U test, between the two algorithms.\\
+This test emphasize the magnitude of the differences, given by the U test, between the two algorithms.
+\begin{table}[h]
+	\centering
+	\caption{Evaluation of the application on web services}
+	\label{table:res}
+	\renewcommand*{\arraystretch}{1.25}
+	\begin{adjustbox}{max width=\textwidth}
+		\begin{tabular}{|c|c|c|c|c|c|c|c|}
+			%Dimeshift
+			\hline
+			\multicolumn{3}{|c|}{Test details} & \multicolumn{2}{c|}{Statistic} & \multicolumn{2}{c|}{Wilcoxon rank sum test} & Vargha and Delaney    \\
+			\hline
+			WebSite & Analysis & Application & Mean   & Standard Deviation   & W                               & p-value                             & A            			         \\
+			\hline
+			\multirow{4}{*}{Dimeshift}& \multirow{2}{*}{Coverage} & WRGen       & 35     & 6.236096             & \multirow{2}{*}{82}             & \multirow{2}{*}{0.01684}            & \multirow{2}{*}{0.82 (large)}  \\
+			\cline{3-5}
+			& & Evosuite    & 28.9   & 3.813718             &                                 &                                     &            			   		 \\
+			\cline{2-8}
+			& \multirow{2}{*}{\# Test} & WRGen       & 24     & 1.414214             & \multirow{2}{*}{79.5}           & \multirow{2}{*}{0.02631}            & \multirow{2}{*}{0.795 (large)}  \\
+			\cline{3-5}
+			& & Evosuite    & 21.8   & 2.347576             &                                 &                                     &            			   		 \\
+			%Retroboard
+			\hline
+			\multirow{4}{*}{Retroboard}& \multirow{2}{*}{Coverage} & WRGen       & 68.9     & 4.72464             & \multirow{2}{*}{100}             & \multirow{2}{*}{0.0001433}            & \multirow{2}{*}{1 (large)}  \\
+			\cline{3-5}
+			& & Evosuite    & 53.9   & 2.330951            &                                 &                                     &            			   		 \\
+			\cline{2-8}
+			& \multirow{2}{*}{\# Test} & WRGen       & 26.1     & 2.233582             & \multirow{2}{*}{43.5}             & \multirow{2}{*}{0.6436}            & \multirow{2}{*}{0.435 (negligible)}  \\
+			\cline{3-5}
+			& & Evosuite    & 26.3   & 2.110819             &                                 &                                     &            			   		 \\
+			%Pagekit
+			\hline
+			\multirow{4}{*}{Pagekit}& \multirow{2}{*}{Coverage} & WRGen       & 19.7     & 3.093003             & \multirow{2}{*}{93}             & \multirow{2}{*}{0.001218}            & \multirow{2}{*}{0.93 (large)}  \\
+			\cline{3-5}
+			& & Evosuite    & 14.1   & 2.378141             &                                 &                                     &            			   		 \\
+			\cline{2-8}
+			& \multirow{2}{*}{\# Test} & WRGen       & 4     & 0.8164966             & \multirow{2}{*}{17.5}             & \multirow{2}{*}{0.01108}            & \multirow{2}{*}{0.175 (large)}  \\
+			\cline{3-5}
+			& & Evosuite    & 5.2   & 0.9189366              &                                 &                                     &            			   		 \\
+			%phoenix
+			\hline
+			\multirow{4}{*}{Phoenix}& \multirow{2}{*}{Coverage} & WRGen       & 59.2     & 8.283853             & \multirow{2}{*}{86.5}             & \multirow{2}{*}{0.00599}            & \multirow{2}{*}{0.865 (large)}  \\
+			\cline{3-5}
+			& & Evosuite    & 47.9   & 8.238797             &                                 &                                     &            			   		 \\
+			\cline{2-8}
+			& \multirow{2}{*}{\# Test} & WRGen       & 9.2     & 1.032796             & \multirow{2}{*}{23.5}             & \multirow{2}{*}{0.04131}            & \multirow{2}{*}{0.235 (large)}  \\
+			\cline{3-5}
+			& & Evosuite    & 10.3   & 1.567021             &                                 &                                     &            			   		 \\
+			%Splittypie
+			\hline
+			\multirow{4}{*}{Splittypie}& \multirow{2}{*}{Coverage} & WRGen       & 40.4   & 4.526465             & \multirow{2}{*}{96}             & \multirow{2}{*}{0.0005501}          & \multirow{2}{*}{0.96 (large)}  \\
+			\cline{3-5}
+			& & Evosuite    & 26.2   & 7.568942             &                                 &                                     &            			   		 \\
+			\cline{2-8}
+			& \multirow{2}{*}{\# Test} & WRGen       & 17.2   & 3.224903             & \multirow{2}{*}{6.5}            & \multirow{2}{*}{0.0008922}          & \multirow{2}{*}{0.065 (large)}  \\
+			\cline{3-5}
+			& & Evosuite    & 21.9   & 2.078995             &                                 &                                     &            			   		 \\
+			\hline
+		\end{tabular}
+	\end{adjustbox}
+\end{table}
 The evaluation is also executed limiting the number of methods callable for each unit test, \emph{@Test}, but letting the test suite to grow in number of unit test infinitely.
 The execution time is also restricted, so the program has not to run endlessly and eventually halt when it is reached the total coverage.\\
-Respectively, the maximum number of method is \emph{40} while the time is \emph{60000 ms}, and given as input with the properties file~\ref{sec:prop}.\\
-The next sections show the results for each application under analysis.
-\input{sections/dimeshift.tex}
-\input{sections/pagekit.tex}
-\input{sections/phoenix.tex}
-\input{sections/retroboard.tex}
-\input{sections/splittypie.tex}
+Respectively, the maximum number of method is \emph{40} while the time is \emph{60 s}, and they are given as input with the properties file~\ref{sec:prop}.\\
+The table \ref{table:res} show the results for each application under analysis.\\
+The results on the web applications, give us some interesting results about the algorithm.
+In all the coverage analysis, the algorithm presented has a greater performance compared to the counterpart.
+In fact, the p-value is below the agreed risk of 5 percent (0.05), so one significant difference can be assumed.\\
+The Vargha and Delaney value confirm each result, pointing the magnitude of the differences to \emph{large}, in favour of the Web Random Generator.
+The result, in case of number of tests, are slightly different than before.
+\begin{figure}[H]
+	\centering
+	\input{sections/dimeshift.tex}
+	\input{sections/retroboard.tex}
+\end{figure}
+
+The first service,\emph{Dimeshift}, everything point out, as before, that the WRGen has an higher value, however the number of test in each test-suite is preferable to be as thin as possible.
+Thus, even if the WRGen has a capacity to cover better the Web-app, in this case it require also a greater test-suite to pursue the scope.\\
+We can check this results also with the box-plot representation \ref{fig:dimeshift}.
+For the coverage is simple to find how the WRGen has a greater variance, possible synonym of a correct random generation.
+The number of tests, also, show that Evosuite on average require fewer tests to pursue the goal.\\
+Nevertheless, the \emph{Retroboard} application results on the test analysis are quite different.
+The p-value is higher than the risk, so the Wilcoxom test tells us nothing.
+Moreover the A value see no differences on the result of the two under test programs.
+With the box-plot \ref{fig:retroboard}, in fact, we can see that the behaviour of the two algorithm is the same.\\
+Still, the WRGen is more performer, with a higher coverage compared to the same number of test executed.
+\begin{figure}[H]
+	\centering
+	\input{sections/phoenix.tex}
+	\input{sections/splittypie.tex}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\input{sections/pagekit.tex}
+\end{figure}
+With these last three services, the results are similar.\\
+As defined before, The U test accordingly with the A value tell that the test-suite created by the WRGen has a higher coverage in respect of the counterpart.\\
+Additionally, the Vargha and Delaney method on the number of tests define that the Evosuite approach leads to generate a higher number of test.
+However, the higher number of possible final tests do not help the algorithm to find out a better test-suite.
+As before, the results are easily checkable with the graphical representation.
 \newpage

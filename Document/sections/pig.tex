@@ -9,7 +9,7 @@ Then it is checked if an older generated value exist and, in case of a true resp
 With an equal probability, it is possible that the program try to generate a new value or choose to pick an old ones.
 There is a third options for object types that is the \emph{null} value, but has a smaller probability to appear.\\
 When an older value is chosen, the data to link the two references are arranged for future steps.
-On the other case, a random value is required, and the Random~\cite{rand} class enter in action.\\
+On the other case, a random value is required, and the Random~\cite{rand} class enter in action.
 For some primitives, this dependency is able to generate directly a value, while in other cases an extra work is necessary.
 In fact, in case of int, float, long, double, and boolean, there are already functions.
 %\lstset{language=XML} 
@@ -44,7 +44,7 @@ public static String generateRandomChars(String candidateChars, int length, Rand
 }
 \end{lstlisting}
 The difference between String and char is the length input, which is 1 for character, and random generated for strings.
-Variable \emph{candidateChars} is a sequence of accepted character. 
+Variable \emph{candidateChars} is a sequence of accepted character. \\
 For example, \emph{"ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefhijklmnopqrstuvwxyz"} can be used if upper/lower case letters and numbers are the only accepted values we want to generate with.\\
 In the Java language, there are also different types of objects, and one of them is the Enumerator~\cite{enum}.\\
 This program consider Enums as a primitive type and when one is found, it generate one instance of it with a random value accordingly with the requirement of randomness.\\
@@ -76,18 +76,18 @@ This is automatically done as in the case of primitives, and the links between v
 				\EndIf
 			\EndIf	
 		\EndFor
-		\Return $params$ \Comment{$All~the~object~instantiated$}
+		\Return $params$ \Comment{$All~the~instantiated~objects$}
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
 
 For example, there is a class Clazz that has to be instantiated.
-It is nor primitive neither an enum, so a random constructor is picked (\ref{psc:instantiator} line 10).
+It is nor primitive neither an enum, so a random constructor is picked (line 10 in \ref{psc:instantiator}).
 The one taken require two variables, an int and another unknown class Clazz2.
-So the generator is recalled on the int variable and on the Clazz2 (\ref{psc:instantiator} line 14).
-About the primitive typos, the program could generate a new value or pick an old ones if exist (\ref{psc:instantiator} line 5).
+So the generator is recalled on the int variable and on the Clazz2 (line 14 in \ref{psc:instantiator}).
+About the primitive typos, the program could generate a new value or pick an old ones if exist (line 5 in \ref{psc:instantiator}).
 Clazz2 has only the default empty constructor, thus Reflection can instantiate it directly (\ref{psc:instantiator} line 12).
-Now there is the backtrack on the recursion(\ref{psc:instantiator} line 15 can now be executed) and the Clazz can be instantiated with the constructor chosen and the input variables created just before.\\
+Now there is the backtrack on the recursion(line 15 in \ref{psc:instantiator} can now be executed) and the Clazz can be instantiated with the constructor chosen and the input variables created just before.\\
 With this approach the program is able to instantiate any kind of object, which are referenced in the environment, that are required for tests.\\
 As an example of the environment requirement, in case of a class X is required to be instantiated and its source is not in the class-path, the instantiation fail and the creation of tests \emph{is} compromised.
 Until now, the program has take care only of 'directly' instantiable objects, avoiding Interfaces.\\
