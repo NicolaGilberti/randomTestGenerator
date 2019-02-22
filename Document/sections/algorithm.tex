@@ -1,5 +1,7 @@
 \chapter{Test generation Algorithm}\label{ch:testGenAlg}
-This chapter explain all the implementation choices and the key-points of the algorithm.
+
+This chapter explains all the implementation details and the key-points of the test generation algorithm. WRGen generates Selenium-based end-to-end (E2E) test cases for web applications. Researchers~\cite{biagiola2017search} have used \textit{Evosuite}~\cite{evosuite} to generate E2E test cases for web applications. Evosuite is a unit test case generator for Java classes. Although Evosuite is a stable tool that is shown to be quite effective in generating test cases for Java classes, it is very complex and its extension to other test generation scenarios (as web applications) is not straightforward. The goal of this project is to implement a test case generator that performs only those operations that are needed for generating Selenium-based (E2E) test cases for web applications.
+
 \input{sections/msa.tex}
 \input{sections/ci.tex}
 \input{sections/pig.tex}

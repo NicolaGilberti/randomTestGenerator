@@ -1,28 +1,24 @@
 \chapter{Background}\label{ch:background}
-The project is developed in Java~\cite{Arnold:2000:JPL:556709} and is based on basic Java programming technologies such as Javac~\cite{javacWiki}, a Java compiler, Reflection~\cite{reflect}, to dynamically analyze classes at runtime, and Maven~\cite{bharathan2015apache}, to manage dependencies and for the cross-platform compatibility.\\
-In addition to those elements, it is used an external library, called Spoon, that will be properly explained in the next section [\ref{sec:spoon}].
+The project is developed in Java~\cite{Arnold:2000:JPL:556709} and is based on basic Java programming technologies such as, a Java compiler (Javac~\cite{javacWiki}), Reflection~\cite{reflect}, to dynamically analyze classes at runtime, and Maven~\cite{bharathan2015apache}, to manage dependencies and for the cross-platform compatibility.
+
+In addition to those elements, a Java parser, called Spoon, is used. Next section introduces Spoon and its application in this project.
 
 \section{Spoon}\label{sec:spoon}
-Spoon~\cite{pawlak:hal-01169705} is a Java library that gives you the ability to create/modify the source code.
-Therefore, with this library, a programmer can transform or analyze Java code dynamically.\\
-This routine takes advantage of the Java Reflection~\cite{reflect} technique to represent the Java abstract syntax trees (AST) of the code under analysis, but also to give a programming interface (intercession API) that let the coder modify/generate Java source code.\\
-Moreover, it implements a native method to integrate and process Java annotation~\cite{annotation}, to embed metadata into the code.\\
-About the code that a programmer can insert, Spoon give different option to check its correctness, in order to avoid troubles during compile time.\\
-The first method leverage on generics to manipulate the AST that give to the programmer a feedback in case of bad code.\\
-Another option that Spoon implement is the template engine with static-checks that let the programmer insert code ensuring automatically its correctness.\\
-In case of those technique are not used, you can still check the well-formedness  analyzing the stack trace error at compile time.
+Spoon~\cite{pawlak:hal-01169705} is a Java library that gives the ability to create and modify Java source code. Therefore, with this library, a programmer can transform or analyze Java code dynamically.
+
+Spoon takes advantage of the Java Reflection~\cite{reflect} feature to build the abstract syntax tree (AST) of the code under analysis, but also to give a programming interface (intercession API) that let the user modify and generate Java source code.
+
+%Moreover, it implements a native method to integrate and process Java annotation~\cite{annotation}, to embed metadata into the code.
+
+Regarding the code that a programmer can insert, Spoon gives different options to check its compliance with the Java grammar. The first option leverages generics to manipulate the AST that give to the programmer a feedback in case of bad code (????). Another option that Spoon implements is the template engine with static checks that let the programmer insert code automatically ensuring that it is well formed.
+
+%In case of those technique are not used, you can still check the well-formedness analyzing the stack trace error at compile time.
 
 \subsection*{How it works}\label{subsec:howSpoon}
-Spoon works primarily on the AST, giving elements to analyze and modify the syntax tree.\\
-In fact, the \emph{Processor} and the \emph{Factory} features are the key-components to use to examine and to transform the code.\\
-The Processor let the programmer analyze the AST, while the Factory permit to modify the AST, adding and/or removing elements from the syntax trees.\\
-The concept is similar to the read and writes operation, where the first read-only while the second can also write.\\
-In particular, \emph{Processor} is utilised for the analysis and the querying onto the code.\\
-Those operation are possible thanks to the visit pattern applied to the Spoon model.\\
-All the elements have an \emph{Accept} method that give the permission to be visited by a visitor object.\\
-For instance, in the example \ref{lst:ProcessorExample} a Processor is used to analyze the code, searching for empty catch block.
-As we can see, the Processor works on a CtCatch, which is the Compile Time Catch given by the Spoon Metamodel, and check for the Statments inside the CtCatch body. \\
-As shown before, to generate new elements, a \emph{Factory} instance is necessary.\\
+Spoon works primarily on the AST, giving the possibility to manipulate Java code elements. The \emph{Processor} and the \emph{Factory} classes are the key-components to use to analyze and transform the code. The Processor lets the programmer analyze the AST, while the Factory permits to modify the AST, adding and/or removing elements from the syntax tree. The concept is similar to the read and write operations, where the first operation (Processor) is read-only while the second (Factory) can also write.
+
+In particular, the Processor class is utilised for querying Java code elements. That operation is possible thanks to the visit pattern applied to the Spoon model (AST). All the code elements have an \emph{Accept} method, therefore each element can be visited by a visitor object. For instance, in \autoref{lst:ProcessorExample}, a Processor is used to search for an empty catch block. As the code shows, the Processor works on a \textit{CtCatch}, which is the Compile Time Catch given by the Spoon Metamodel, and checks for statements inside the CtCatch body.
+
 \begin{lstlisting}[caption={Processor example taken from \href{http://spoon.gforge.inria.fr/processor.html}{Spoon documentation}},label={lst:ProcessorExample}]% Start your code-block
 
 public class CatchProcessor extends AbstractProcessor<CtCatch> {
@@ -34,9 +30,8 @@ public class CatchProcessor extends AbstractProcessor<CtCatch> {
 }
 \end{lstlisting}
 
-\emph{Factory} give the coder the ability to create new elements, fill their data and add them to the Syntax Trees under analysis.
-There are more than one Factory, where each one is specialized to facilitate the creation of elements.
-As shown before, to generate new elements, a \emph{Factory} instance is necessary.\\
+The Factory class gives the coder the ability to create new elements, and add them to the Syntax Tree under analysis. There is more than one Factory class, where each one is specialized to facilitate the creation of specific code elements.
+
 \begin{lstlisting}[caption={Factory example taken from \href{https://www.programcreek.com/java-api-examples/index.php?api=spoon.reflect.factory.Factory}{Spoon Projects}},label={lst:FactoryExample}]% Start your code-block
 
 Factory factory = this.getFactory();
@@ -49,5 +44,5 @@ CtBlock methodBlock = factory.Core().createBlock();
 methodBlock.addStatement(ctTry);
 element.setBody(methodBlock);
 \end{lstlisting}
-In this example, a Factory object is used and different method, in this case only \emph{Core} and \emph{Code}, are utilised to specialize the factory on the needs.\\
-It is evident, from case \ref{lst:FactoryExample}, that the \emph{Code} method is necessary in creating code elements, called Snippet, while \emph{Core} help creating blocks of code, that will eventually contain \emph{Code} generated elements.
+
+In \autoref{lst:FactoryExample}, a factory object is used to create a \textit{try} block inside an existing Java method. The \emph{Code} method of the factory object is used to create code elements (for example, \textit{snippets}) while the \emph{Core} helps in creating blocks of code, that will eventually contain \emph{Code} generated elements.

@@ -12,20 +12,18 @@
 %Firstly an instrumentation phase to insert extra code for the analysis.
 %Then, the creation of test-cases for the line-coverage\textbackslash branch-coverage analysis is performed.\\
 %The program is based on Java and the instrumentation is for Java classes.\\
-Nowadays, a considerably high amount of software is present in the commercial scenario.
-For this reason, the testing phase plays a crucial role for the software developing companies.\\
-Thanks to new technologies, which are continuously facing those problems, other scenarios
-can be explored and tested accordingly using the code (to be modified). More specifically,
-the testing phase on web pages can be carried out making use of a graph, where each
-depicted node represents a state of the application, transitions correspond to links, buttons,
-text boxes or every kind of operation which can lead to a movement from an application state to another.\\
-Despite the solution to the illustrated situation can be exploited with other SoA processes,
-web pages can be extremely demanding in terms of test generation.\\
-In this document, a program able to create a test suite for a given application following a
-random testing approach is presented. This program pursues the main goal following these
-steps: first, an instrumentation phase is performed in order to insert extra code for analysis
-purpose, then test cases for the line-coverage/branch-coverage analysis are created.\\
-The illustrated program has been coded using Java language, supporting Java for the representation of the graphs. 
+
+
+Nowadays, software has a big impact in all aspects of our society. More and more companies develop software and testing plays a crucial role for ensuring its quality.
+
+%Thanks to new technologies, which are continuously facing those problems, other scenarios can be explored and tested accordingly using the code (to be modified). More specifically, the testing phase on web pages can be carried out making use of a graph, where each depicted node represents a state of the application, transitions correspond to links, buttons, text boxes or every kind of operation which can lead to a movement from an application state to another.
+%
+%Despite the solution to the illustrated situation can be exploited with other SoA processes, web pages can be extremely demanding in terms of test generation.
+
+Web applications present new testing challenges with respect to traditional software testing, due to their dynamic and heterogeneous nature. In this document, a tool (Web Random Generator) able to create a test suite for a given application following a random testing approach is presented. WRGen first instruments Page Objects developed for the given application to measure coverage. Then it generates random test cases as sequence of Page Object methods.
+
+Finally, a comparison with a state-of-the-art random generator tool (Evosuite) on 5 web applications is carried out. In terms of coverage, WRGen outperforms Evosuite random generator over all subjects.
+
 \vfill\noindent
 \hfill
 \begin{flushright}

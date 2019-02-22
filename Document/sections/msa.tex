@@ -1,17 +1,10 @@
 \section{Master-slave architecture }\label{sec:MSArch}
-The program execute different steps to achieve the final result, where each of them are performed by different 'workers'.\\
-Specifically, the program use two distinct threads to pursue its goal.\\
-This architecture balance the work-load on multiprocessor, increasing the efficiency.
-A similar approach is also used by EvoSuite~\cite{evosuite}, the counterpart of this project.\\
-Although EvoSuite is a better choice because it perform more different operations, some of them are not required for the scope of the project.
-Thus, it is demanded a resource affordable project that perform only the required operations, avoiding not necessary tasks.\\
-The algorithm use threads for specific purposes, defining distinct operation and scopes for each one.
-Firstly the main thread start, managing all the import from resources~\ref{sec:prop} to prepare the environment for the other thread.\\
-In fact, the values imported need to be manipulated, to became effective elements.
-For example, class-path must be updated dynamically in order to recover all the classes necessaries in future steps.\\
-The second thread begins after the allocation of the environment.
-This new thread, that can be seen as the slave, execute most of the complex algorithms and send messages to the master all the time it find something.\\
-In fact, second thread instrument the input class~\ref{sec:ClassInstr}, and generate tests on it~\ref{sec:tg}.\\
-Those tests are sent back to the primary thread, messages pass through a LinkedBlockingQueue~\cite{linkedBlockingQueue}, that check their validity to create a well-formed test-suite.\\
-The choice of a LinkedBlockingQueue is a default option, to reduce the impact on the memory load during inactivity and to avoid concurrent mistakes at run-time.\\
-Even if there can't be simultaneous access from both threads, because the second one generates the message and it restarts creating a new one, the implementation follows the best-practices hints for correct data exchange between threads.
+The program performs different steps to achieve the final result and each step is performed by a different \textit{worker}. Specifically, the program uses two distinct threads. This architecture, that other test case generators (as Evosuite~\cite{evosuite}) implement, can be used to balance the work-load on different processors to increase the efficiency.
+ 
+%Although EvoSuite is a better choice because it perform more different operations, some of them are not required for the scope of the project.Thus, it is demanded a resource affordable project that perform only the required operations, avoiding not necessary tasks.
+
+The algorithm use threads for specific purposes, defining distinct operations and scopes for each of them. Firstly the main thread start, managing all the imports from resources (see \autoref{sec:prop}) to prepare the environment for the other thread. In fact, the main thread updates dynamically the Java \textit{classpath} in order to recover all the classes needed for the runtime execution.
+
+The second thread (slave) is activated by the main thread (master) once the environment is set up. The second thread generates and executes test cases and sends messages to the main thread with the results of its computations.
+
+The second thread instruments the input class, a Java class containing Page Object methods for a given web application, and generates tests as sequences of those methods (see \autoref{sec:tg}). Those tests are sent back to the primary thread through a \textit{LinkedBlockingQueue}~\cite{linkedBlockingQueue}, that checks their validity and creates a well-formed test suite. The choice of a LinkedBlockingQueue is a default option to reduce the impact on the memory load during inactivity and to avoid errors due to concurrency at run-time. Even if there can't be simultaneous access from both threads, because the second one generates the message and it restarts creating a new one, the implementation follows the best-practices hints for correct data exchange between threads (????).
