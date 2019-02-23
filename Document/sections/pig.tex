@@ -7,9 +7,15 @@ The goal of this chapter is to explain how the primitive input types are generat
 
 Java reflection APIs only offer the possibility to instantiate objects at runtime. Therefore, Java primitive types have to be instantiated using their object representations (\emph{Integer} for \emph{int}, \emph{Character} for \emph{char}\dots). The type \emph{String} is already an object in the Java language, there is no primitive counterpart.
 
-When the test generator requires a new variable of a primitive type, the primitive input generator creates an object of that type using the default constructor, assigning a fixed value (\hl{what is the fixed value?}). 
+%When the test generator requires a new variable of a primitive type, the primitive input generator creates an object of that type using the default constructor, assigning a fixed value (\hl{what is the fixed value?}). 
+When the test generator requires a new variable of a primitive type, the primitive input generator creates an object of that type using the default constructor, assigning a default not null value. The value can be every element the class can contain, but it is a temporary value, and next steps will overwrite it. 
+This default is necessary only for a correct instantiation of the class.
 
-Then, it checks if a value of that type was previously generated. If yes, with an equal probability (\hl{which is?}) the program generates a new value or picks a previously generated one (\hl{if no, what happens?}). There is a third option for object types that is the \emph{null} value, but it is chosen with a smaller probability (\hl{which is and why is it smaller?}).
+%Then, it checks if a value of that type was previously generated. If yes, with an equal probability (\hl{which is?}) the program generates a new value or picks a previously generated one (\hl{if no, what happens?}). There is a third option for object types that is the \emph{null} value, but it is chosen with a smaller probability (\hl{which is and why is it smaller?}).
+Then, it checks if a value of that type was previously generated. In case of primitive types, with a 50\% probability the program generates a new value, while the other 50\% let the program to pick a previously generated one.
+However, for object types, those two probability decrease, adding a third option, the null value. This alternative is now setted to 2\%, a lot smaller than the other two, for implementation choices, but can be re-arranged.
+Indeed, if the class has no available instantiation, the algorithm choose automatically to generate a new value.
+For objects, there is still the probability to choose a null value with the same chance as before.
 
 When a previously generated value is chosen, the input generator links the new variable with the one the previously generated value of the same type was assigned to. Otherwise, a random value is generated using the \textit{Random} Java class. For some primitive types the Random class can generate values directly, as in the case of \textit{int}, \textit{float}, \textit{long}, \textit{double}, \textit{boolean}. \autoref{lst:genDef} shows how these primitive types are handled by the input generator. 
 
@@ -36,8 +42,6 @@ case "java.lang.Short":
 	obj.setValue(random.nextInt(65536) - 32768);
 \end{lstlisting}
 
-Char and String require more operations, thus the input generator uses an extra function (see \autoref{lst:genString&Char}).
-
 \begin{lstlisting}[caption={Random String/char generator},label={lst:genString&Char}]% Start your code-block
 
 public static String generateRandomChars(String candidateChars, int length, Random random) {
@@ -49,12 +53,22 @@ public static String generateRandomChars(String candidateChars, int length, Rand
 }
 \end{lstlisting}
 
-The difference between String and char is the length, which is 1 for char, and it is random generated for String. The variable \emph{candidateChars} in \autoref{lst:genString&Char} is a string of desired characters. For example, it could be the concatenation of upper/lower case letters and numbers if those are the desired characters a user of WRGen wants in his/her random string values (\hl{is it a parameter of your tool?}).
+Char and String require more operations, thus the input generator uses an extra function (see \autoref{lst:genString&Char}).
 
-In the Java language, there are also other types of objects and one of them is the \textit{Enumerator}. The input generator considers \textit{Enum} as a primitive type and when one is required, it randomly chooses a value from those specified by the particular Enum type. \hl{With Enums, the equal operation work differently and so, the links for the usage of old values are not necessary}. 
+%The difference between String and char is the length, which is 1 for char, and it is random generated for String. The variable \emph{candidateChars} in \autoref{lst:genString&Char} is a string of desired characters. For example, it could be the concatenation of upper/lower case letters and numbers if those are the desired characters a user of WRGen wants in his/her random string values (\hl{is it a parameter of your tool?}).
+The difference between String and char is the length, which is 1 for char, and it is random generated for String. The variable \emph{candidateChars} in \autoref{lst:genString&Char} is a string of desired characters. Now, it is a concatenation of upper/lower case letters and numbers, even though the choice can be re-defined in future works. 
 
-If the input parameter to be generated is not of a primitive type, a recursive approach is adopted (see \autoref{psc:instantiator}). The non primitive type class is analyzed, collecting all its constructors. Then one is randomly picked and, if the constructor requires input parameters, the random generation process is called recursively on each parameter (line~14). If the constructor does not require any input parameter, Java reflection can instantiate it directly. If the same constructor, with at least one input parameter, was previously instantiated with a probability of \hl{XX} is picked. As in the case of primitive values the reference to the previous variable assignment is saved accordingly.
+In the Java language, there are also other types of objects and one of them is the \textit{Enumerator}. The input generator considers \textit{Enum} as a primitive type and when one is required, it randomly chooses a value from those specified by the particular Enum type. 
+%\hl{With Enums, the equal operation work differently and so, the links for the usage of old values are not necessary}. 
+Differently from other object class types, the equality is managed differently and two different representation are equal only if the enum value is the same, like in Java-primitive types. So the link with older value is no longer addressed.
 
+%If the input parameter to be generated is not of a primitive type, a recursive approach is adopted (see \autoref{psc:instantiator}). The non primitive type class is analyzed, collecting all its constructors. Then one is randomly picked and, if the constructor requires input parameters, the random generation process is called recursively on each parameter (line~14). If the constructor does not require any input parameter, Java reflection can instantiate it directly. 
+%If the same constructor, with at least one input parameter, was previously instantiated with a probability of \hl{XX} is picked. As in the case of primitive values the reference to the previous variable assignment is saved accordingly.
+If the input parameter to be generated is not of a primitive type then the option could be different again.
+The three possibilities defined for the object types enter in action. In case of old or null value, the instance is generated directly, as in the previous cases.
+If the choice is the generation of a new instance, the constructors of the class are recovered and one is randomly picked for the next step.
+Supposing that the chosen one do not require parameter for the instantiation, the algorithm generate it directly with reflection.
+On the other case, when generation require extra parameters, WRGen recursively call the instantiation method (line~14) on the parameter and then instantiate the object with the instantiated parameters.
 \begin{algorithm}
 	\caption{Instantiator}\label{psc:instantiator}
 	\begin{algorithmic}[1]
@@ -81,7 +95,10 @@ If the input parameter to be generated is not of a primitive type, a recursive a
 	\end{algorithmic}
 \end{algorithm}
 
-Let us suppose that there is a class \textit{A} that has to be instantiated. It is neither a  primitive type nor an enum, so one of its constructor is picked randomly (line~10 in \autoref{psc:instantiator}). Suppose that the one picked requires two parameters, like an int type and another class \textit{B}. Therefore, the generator is called recursively on the int variable and on the class \textit{B} (line~14). Regarding the int type, the program could generate a new value or pick an old one if it was previously generated (line~5) \hl{remind the probability value to the reader}. Suppose that the class \textit{B} has only the default empty constructor, thus Java reflection can instantiate it directly (line~12). Once all the parameters of class \textit{A} are created class \textit{A} can be instantiated with those values (line~15). With this recursive procedure the input generator is able to instantiate parameters of any types.
+Let us suppose that there is a class \textit{A} that has to be instantiated. It is neither a  primitive type nor an enum, so one of its constructor is picked randomly (line~10 in \autoref{psc:instantiator}). Suppose that the one picked requires two parameters, like an int type and another class \textit{B}. Therefore, the generator is called recursively on the int variable and on the class \textit{B} (line~14).
+%Regarding the int type, the program could generate a new value or pick an old one if it was previously generated (line~5)\hl{remind the probability value to the reader}. 
+Regarding the int type, if there is an old generated value the program choose with a 50\% probability to generate a new value or pick an old one. If older values do not exist, the program generate directly a new values (line~5).
+Suppose that the class \textit{B} has only the default empty constructor, thus Java reflection can instantiate it directly (line~12). Once all the parameters of class \textit{A} are created, class \textit{A} can be instantiated with those values (line~15). With this recursive procedure the input generator is able to instantiate parameters of any types.
 
 %As an example of the environment requirement, in case of a class X is required to be instantiated and its source is not in the class-path, the instantiation fail and the creation of tests \emph{is} compromised.
 
@@ -102,6 +119,8 @@ for (BeanDefinition component : components){
 }
 \end{lstlisting}
 The \textit{ClassPathScanningCandidateComponentProvider} and \textit{BeanDefinition} are taken from the Spring Framework~\cite{springFramework}.
-\hl{How is the choice performed when there is more than one class that implements the required interface? Randomly? Once a class that implements the required interface is found what happens?}
+%\hl{How is the choice performed when there is more than one class that implements the required interface? Randomly? Once a class that implements the required interface is found what happens?}
+As the whole application, assuming that there are more than one classes that extends the interface, a random choice is performed on the available classes.
+The randomic search continue until a non interface class is picked and the treatment on the instantiable class is the same defined before (\autoref{sec:pig}).
 
 %Interfaces are commonly used to make reference of it that refers to the Object of its implementing class, and this is why the program manage them.
