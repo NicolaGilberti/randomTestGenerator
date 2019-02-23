@@ -11,7 +11,7 @@ When the test generator requires a new variable of a primitive type, the primiti
 
 Then, it checks if a value of that type was previously generated. If yes, with an equal probability (\hl{which is?}) the program generates a new value or picks a previously generated one (\hl{if no, what happens?}). There is a third option for object types that is the \emph{null} value, but it is chosen with a smaller probability (\hl{which is and why is it smaller?}).
 
-When a previously generated value is chosen, the input generator links the new variable with the one the previously generated value of the same type was assigned to. Otherwise, a random value is generated using the \textit{Random} Java class. For some primitive types the Random class can generate values directly, as in the case of \textit{int}, \textit{float}, \textit{long}, \textit{double}, \textit{boolean}. \autoref{st:genDef} shows how these primitive types are handled by the input generator. 
+When a previously generated value is chosen, the input generator links the new variable with the one the previously generated value of the same type was assigned to. Otherwise, a random value is generated using the \textit{Random} Java class. For some primitive types the Random class can generate values directly, as in the case of \textit{int}, \textit{float}, \textit{long}, \textit{double}, \textit{boolean}. \autoref{lst:genDef} shows how these primitive types are handled by the input generator. 
 
 %\lstset{language=XML} 
 \begin{lstlisting}[caption={Random default generator},label={lst:genDef}]% Start your code-block
