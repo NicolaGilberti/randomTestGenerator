@@ -33,7 +33,8 @@ factory.Code().createCodeSnippetStatement("checker.add("+ counter++ +")");
 \end{lstlisting}
 \end{minipage}
 
-In case of line coverage the statement added is the same, while the analysis of the class under test is different. In fact the instrumentor takes as input the lines of the class under test to cover and performs a bottom-up scan searching for the lines. \hl{When there is a match it appends the instrumentation snippet shifting one line down the rest of the code}.
+In case of line coverage the statement added is the same, while the analysis of the class under test is different. In fact the instrumentor takes as input the lines of the class under test to cover and performs a bottom-up scan searching for the lines.
+%\hl{When there is a match it appends the instrumentation snippet shifting one line down the rest of the code}.
 
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[caption={The function to add the ArrayList instantiation snippet},label={lst:modConstructor}]% Start your code-block
