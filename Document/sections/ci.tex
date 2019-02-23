@@ -63,4 +63,5 @@ The instrumentor (see \autoref{lst:modConstructor})
 %~\href{\projRootLink/support/spoon/SpoonMod.java}{SpoonMod class}
 creates extra methods in the class under test that are needed during test case execution, like getting data from the list of targets and resetting it after  every test execution.
 
-\hl{The last operation that the instrumentor performs is an analysis of the class under test to understand all the default fields, in order to have those values as options when instantiating variables for the class methods}.
+%The last operation that the instrumentor performs is an analysis of the class under test to understand all the default fields, in order to have those values as options when instantiating variables for the class methods. 
+Finally the instrumentor loops through all the methods of the class under test to store the parameter types each method takes as input. This information is useful during test generation, to generate input values of the right type.
