@@ -1,19 +1,55 @@
 \section{Test generator}\label{sec:tg}
-This chapter cover a big part of the program because the whole test generation process start from the secondary thread~\ref{sec:MSArch}, pass through the generator~\ref{sec:pig} and end in the next subsections~\ref{subsec:creation}~\ref{subsec:prettyprinting}.\\
-This program depends on an external service that given a graph representing the class under test, an ending point and a length, it return a random path of at most the size given that finish in the target.
-Given all the proper data collected by the main thread, see~\ref{sec:MSArch} and~\ref{ch:usage}, the second thread recreate a possible correct sequence of action that can be performed on the class.
-This operation is executed before the creation of each test.\\
-Before the creation of a test, the sequence generated is manipulated for the next steps.
-This sequence consist in a list of strings where each string is the name of the method to execute, the node in which it can be executed and the ending node if the method run throwing no error.\\
-For each method, an instance of a~\href{\projRootLink/support/test/MethodTest.java}{MethodTest class} is instantiated, and thanks to that, all the supporting variable are created.
-In this class there is the list of the attributes that are generated with the random generator~\ref{sec:tg}, and all the data to reconstruct them.
-Those values are created once for each method and they are maintained until they need.
-Then, the test creation start.
-\subsection{Creation}\label{subsec:creation}
-Till now there is a list of methods and for each of them there is a possible input.
+%This chapter cover a big part of the program because the whole test generation process start from the secondary thread~\ref{sec:MSArch}, pass through the generator~\ref{sec:pig} and end in the next subsections~\ref{subsec:creation}~\ref{subsec:prettyprinting}.\\
+
+The test generator takes as input a graph representing the class under test. The graph is a directed graph in which nodes model the states of the web application under test and edges are methods of the class under test that represent transitions, namely actions that lead the web application from one state to another.
+
+\hl{explain with figure how the graph looks like (lo aggiungo io)}
+
+%Given all the proper data collected by the main thread, see~\ref{sec:MSArch} and~\ref{ch:usage}, the second thread recreate a possible correct sequence of action that can be performed on the class.
+%This operation is executed before the creation of each test.\\
+
+%Before the creation of a test, the sequence generated is manipulated for the next steps.
+%This sequence consist in a list of strings where each string is the name of the method to execute, the node in which it can be executed and the ending node if the method run throwing no error.\\
+%For each method, an instance of a~\href{\projRootLink/support/test/MethodTest.java}{MethodTest class} is instantiated, and thanks to that, all the supporting variable are created.
+%In this class there is the list of the attributes that are generated with the random generator~\ref{sec:tg}, and all the data to reconstruct them.
+%Those values are created once for each method and they are maintained until they need.
+%Then, the test creation start.
+
+\subsection{Test Case Creation}\label{subsec:creation}
+
+The test generator generates random paths from the given graph representing the sequence of actions (methods of the class under test) to be performed on the web application upon execution. In order to do that, it performs a \textit{random walk} in the graph given a starting node, representing the home page of the web application under test, the maximum length of the path and the \textit{selected} edge that determines the stopping criterion for the random walk. The selected edge is the method of the class under test that needs to be contained in the generated sequence. If the random walk does not traverse the selected edge but it terminates because the maximum path length is reached, the test generator computes the shortest path from the last node of the path produced by the random walk to the target node of the selected edge.
+
+The selected edge is determined by looping through the list all methods of the class under test. In fact, each method has a unique target that needs to be covered upon execution. Therefore, the test generator, at each step of the test generation, tries to generate a sequence in order that the selected method can be executed properly. If the selected method is then covered upon execution, it is removed from the list.
+
+The method sequence generated with the random walk is \textit{abstract}, meaning that it cannot be executed directly since no input values are specified. The input generator (~\autoref{sec:pig}) takes care of generating the proper input values for each method in the sequence. Once the inputs are generated, the method sequence is an actual test case that can be executed.
+
+%Till now there is a list of methods and for each of them there is a possible input.
+
+%Here can be done extra controls on the list and on their input to reject or accept the list as a possible test case.
+
+%After that an instance of the instrumented class is generated and the method's list is executed in order.\\
+The test generator instantiates the instrumented class and the methods in the sequence are executed in order. All the targets that are covered upon the test case execution are saved. 
+
+The test case generation phase ends when all the targets are covered or a timeout is reached. 
+%When an error is thrown, the data is collected and saved for the next step~\ref{subsec:prettyprinting}.
+%Executing the methods, instrumentation can be invoked and, at the end of the list execution, all the covered element are saved.\\
+%Each ran list, its input and outcomes are then considered as a Test-case.\\
+%This blob of data contains everything that permit the validation of the test and also the re-execution of it, maintaining the same outputs: test-case are idem-potent.\\
+%Each test as to be checked in order to add it or not to the final test-suite.
+
+\subsection{Test Suite Creation}\label{subsec:suite-creation}
+
+The final test suite is then created dynamically based on the coverage of each executed test cases.
+
+The problem of finding a minimal set of test cases that covers all the targets is NP-hard (\hl{https://en.wikipedia.org/wiki/Set\_cover\_problem}). WRGen uses a simple greedy heuristic (\autoref{lst:checkForFinalTestSuite}). The heuristic starts by adding to the final test suite the test case that covered more targets and then repeatedly adds the test case that covered the targets not covered by the test suite. If a test case covers the same target of another in the final test suite but it has less statements (smaller size), it is selected to be in the final test suite.
+
+%If a test is the only one to cover a specific path, it is added to the test-suite.
+%This work also in case of empty suite.\\
+%If a new test cover the same as another inside the test-suite, then the length or possible extra path covered by the tests decide for who will stay in the test-suite.
+
 \begin{lstlisting}[caption={Check-test method},label={lst:checkForFinalTestSuite}]% Start your code-block
 
-private static void AddToFinalTestCase(TestCase newTest) {
+private static void addToFinalTestCase(TestCase newTest) {
   HashSet<Integer> tmp1 = newTest.getBranchCov();
   boolean flag=true;
   if(finalTests.isEmpty()) {
@@ -46,32 +82,26 @@ private static void AddToFinalTestCase(TestCase newTest) {
   }
 }
 \end{lstlisting}
-Here can be done extra controls on the list and on their input to reject or accept the list as a possible test case.
-After that an instance of the instrumented class is generated and the method's list is executed in order.\\
-When an error is thrown, the data is collected and saved for the next step~\ref{subsec:prettyprinting}.
-Executing the methods, instrumentation can be invoked and, at the end of the list execution, all the covered element are saved.\\
-Each ran list, its input and outcomes are then considered as a Test-case.\\
-This blob of data contains everything that permit the validation of the test and also the re-execution of it, maintaining the same outputs: test-case are idem-potent.\\
-Each test as to be checked in order to add it or not to the final test-suite.
-The final test-suite is then created dynamically~\ref{lst:checkForFinalTestSuite}.\\
-If a test is the only one to cover a specific path, it is added to  the test-suite.
-This work also in case of empty suite.\\
-If a new test cover the same as another inside the test-suite, then the length or possible extra path covered by the tests decide for who will stay in the test-suite.
-\subsection{Pretty printing}\label{subsec:prettyprinting}
-Final test-suite has to be printed out in order to be executed.
-Then all the data collected before are used to recreate the formula to instantiate and execute methods in a JUnit fashion.\\
-As in a Java class, the first area is about the imports.
-This is recreated thanks to the import that are inside the Instrumented class, which are managed automatically by Spoon, if it is setted accordingly.
+
+%\subsection{Pretty printing}\label{subsec:prettyprinting}
+
+Once the final test suite is created it has to be printed out in order to be executed. The final test suite is a JUnit test suite. The imports are automatically handled by Spoon and are created when Spoon is used to create the instrumented class. \autoref{lst:autoImportTrue} shows how to set Spoon correctly for this purpose.
+
+%Final test-suite has to be printed out in order to be executed.
+%Then all the data collected before are used to recreate the formula to instantiate and execute methods in a JUnit fashion.\\
+%As in a Java class, the first area is about the imports.
+%This is recreated thanks to the import that are inside the Instrumented class, which are managed automatically by Spoon, if it is setted accordingly.
+
 \begin{lstlisting}[caption={How to let Spoon automatically manage imports during class generation},label={lst:autoImportTrue}]% Start your code-block
 
 factory.getEnvironment().setAutoImports(true);
 \end{lstlisting}
-The same auto-generated import list is then recovered and used in the printing part.
-After that, a \emph{Tester} class is generated and the real tests are written inside.
-Each single test start with a common pattern that is as following.
-First it came the JUnit annotation used to identify tests, \emph{@Test}.
-As second element, a comment that give some information about the test, like the coverage.
-Third element is the test's header followed by the instantiation code for the class under test.
+
+%The same auto-generated import list is then recovered and used in the printing part.
+%After that, a \emph{Tester} class is generated and the real tests are written inside.
+Then the test suite class is created.  Each test case starts with a common pattern that is as following. First, the JUnit annotation used to identify tests, namely \textit{@Test}.
+As second element, a comment that gives information about the coverage of the test. More specifically the total coverage of the test, as percentage, and a list of identifiers that represent the lines (or branches) of the class under test covered. The third element is the method declaration with the name of the test, followed by the instantiation of the class under test.
+
 \begin{lstlisting}[caption={Example test case, first part},label={lst:testCAseFirstPart}]% Start your code-block
 
 public class Tester{
@@ -83,7 +113,9 @@ public class Tester{
 		main.ClassUnderTest obj = new main.ClassUnderTest();
 		...
 \end{lstlisting}
-Here, tests could differ: if the class has multiple constructors, the instantiation could be preceded by extra variables depending on the constructor parameter requirements.
+
+Here, tests could differ. If the class under test has multiple constructors, the instantiation is preceded by the parameter assignments required by the constructor.
+
 \begin{lstlisting}[caption={example of some possible printing cases},label={lst:printMethodComplex}]% Start your code-block
 
 		int var3920 = 1599533343;
@@ -97,11 +129,10 @@ try{
 	obj.editFeedWidgetDashboardContainerPage(var3910,var3911,var3912,var3913,var3914);
 }catch(po_utils.NotInTheRightPageObjectException e){}
 \end{lstlisting}
-Now each test differ for the method lists and the executions outputs, however the printer is able to manage all the variables for each instantiation and also try-catch block when methods thrown errors.\\
-In the listing~\ref{lst:printMethodComplex} we can see how cases similar to the example at the end of~\ref{sec:pig} are managed.\\
-Tabulation is used to define the depth level of the variables. For example at line 1 there is a 2-Tab variable meaning that it this is required for a 1-Tab variable instantiation, which is in line 2.\\
-All the 1-Tab depth variables are the input for the method in line 9.\\
-During the execution, this method generate a \emph{NotInTheRightPageObjectException} so the test take care of that with a try-catch block around it.\\
-Another element is the reference to an old variable in line 5.
-The test end with an assertion, that check the correct generation of the test, checking if the branch covered are effectively executed by the test.\\
-This can be done because the instrumentation during tests still work and the list of executed branch is maintained, so the equality can be assessed.\\
+
+Each test also differs for the method sequence and the execution outputs. The test suite printer is able to manage all the input variable assignments and it also creates try-catch blocks in methods which thrown exceptions upon execution.
+
+\autoref{lst:printMethodComplex} shows %how cases similar to the example at the end of~\ref{sec:pig} are managed.\\
+how the method \textit{editFeedWidgetDashboardContainerPage} of the class under test for the application \textit{Pagekit} is called. Tabulation is used to define the depth level of the variables. For example at line~1 there is a \textit{2-Tab} variable meaning that it this is required for a \textit{1-Tab} variable assignment, which is in line~2. All the 1-Tab depth variables are the input for the method of the class under test in line~9. Upon execution, this method throws a \textit{NotInTheRightPageObjectException}, therefore, it is inside a try-catch block. Moreover, the int variable at line~5 is assigned the value of another variable of the same type previously generated (\textit{var120}). 
+
+Each test case ends with an assertion, that checks that all the targets covered during the test case generation by that test, are also covered when the same test is executed within the final test suite. This can be done by instantiating the instrumented class under test in the final test suite.
