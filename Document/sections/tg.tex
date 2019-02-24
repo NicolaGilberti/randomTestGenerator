@@ -46,7 +46,7 @@ The problem of finding a minimal set of test cases that covers all the targets i
 %If a test is the only one to cover a specific path, it is added to the test-suite.
 %This work also in case of empty suite.\\
 %If a new test cover the same as another inside the test-suite, then the length or possible extra path covered by the tests decide for who will stay in the test-suite.
-
+\begin{minipage}{\linewidth}
 \begin{lstlisting}[caption={Check-test method},label={lst:checkForFinalTestSuite}]% Start your code-block
 
 private static void addToFinalTestCase(TestCase newTest) {
@@ -82,6 +82,7 @@ private static void addToFinalTestCase(TestCase newTest) {
   }
 }
 \end{lstlisting}
+\end{minipage}
 
 %\subsection{Pretty printing}\label{subsec:prettyprinting}
 

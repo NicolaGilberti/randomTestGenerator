@@ -1,11 +1,11 @@
 \chapter{Empirical evaluation} \label{ch:EmpEvaluation}
-This chapter focuses on the evaluation of WRGen, comparing it with the Evosuite random test generator on 5 web application subjects, namely \textit{Dimeshift}, \textit{Retroboard}, \textit{Pagekit}, \textit{Phoenix} and \textit{Splittypie}. (\hl{put the Github link for each of them}).
+This chapter focuses on the evaluation of WRGen, comparing it with the Evosuite random test generator on 5 web application subjects, namely \textit{Dimeshift} \cite{dimeshift}, \textit{Retroboard} \cite{retroboard}, \textit{Pagekit} \cite{pagekit}, \textit{Phoenix} \cite{phoenix} and \textit{Splittypie} \cite{splittypie}.
 
 Regarding the configuration of the two tools, both test generators were granted the same amount of generation time (1 minute). Moreover, the maximum length of a test case was set in both cases at 40.
 
 The comparison was done executing the test generators 10 times for each web application subject, in order to cope with the randomness of the test generation algorithms. The coverage the relative class under test was measured (line-coverage criterion) as well as the number of test cases generated and executed during the test generation phase. 
 
-The non-parametric \textit{Wilcoxon} statistical test was used considering a significance level of $0.05$, in order to compare WRGen and Evosuite in terms of coverage and number of test cases generated. The Wilcoxon test is used in this context to compare repeated measurements of the same metric (coverage or number of tests) to assess if the their medians differ. Moreover, the \emph{Vargha and Delaney} effect size was measured to asses the magnitude of the difference among the medians.
+%The non-parametric \textit{Wilcoxon} statistical test was used considering a significance level of $0.05$, in order to compare WRGen and Evosuite in terms of coverage and number of test cases generated. The Wilcoxon test is used in this context to compare repeated measurements of the same metric (coverage or number of tests) to assess if the their medians differ. Moreover, the \emph{Vargha and Delaney} effect size was measured to asses the magnitude of the difference among the medians.
 
 %The evaluation is also executed limiting the number of methods callable for each unit test, \emph{@Test}, but letting the test suite to grow in number of unit test infinitely.
 %The execution time is also restricted, so the program has not to run endlessly and eventually halt when it is reached the total coverage.\\
@@ -81,6 +81,8 @@ The non-parametric \textit{Wilcoxon} statistical test was used considering a sig
 	\end{adjustbox}
 \end{table}
 
+The non-parametric \textit{Wilcoxon} statistical test was used considering a significance level of $0.05$, in order to compare WRGen and Evosuite in terms of coverage and number of test cases generated. The Wilcoxon test is used in this context to compare repeated measurements of the same metric (coverage or number of tests) to assess if the their medians differ. Moreover, the \emph{Vargha and Delaney} effect size was measured to asses the magnitude of the difference among the medians.
+
 The \autoref{table:res} shows the results for each web application under analysis. Considering coverage WRGen outperforms Evosuite over all the application subjects. The \textit{p-value} is always lower than the significance level of 0.05 and the effect size statistics tells that the magnitude of the difference is always large.
 
 Considering the number of test cases generated and executed, WRGen significantly generates less tests than Evosuite in 3 out 5 application subjects. This means that not only WRGen covers more than Evosuite but also it achieves this result by generating and executing less tests.
@@ -97,7 +99,16 @@ Considering the number of test cases generated and executed, WRGen significantly
 	\input{sections/retroboard.tex}
 \end{figure}
 
-The boxplots below show, for each application the coverage value and the number of test cases generated for WRGen and Evosuite over the 10 repetitions. (\hl{explain what a boxplot is.})
+The box-plots below show, for each application the coverage value and the number of test cases generated for WRGen and Evosuite over the 10 repetitions. 
+
+%(\hl{explain what a boxplot is.})
+Box-plots are a standardized way of displaying the distribution of data based on a five number summary: minimum, first quartile (Q1), median (second quartile), third quartile(Q3), and maximum.
+Quartile is a special case of quantiles and they are the three point that divide the distribution values into 4 equal-sized groups.
+Thanks to that, box-plots are useful for the presentation of non parametric distribution, like in this scenario.
+Moreover, this graphical technique allow to examine/compare quickly more than one dataset, telling for each plot the spread and skewness of the data.
+In those representations, following the vertical axis, the lower whiskers is the minimum value of the distribution, while the upper is the maximum.
+About the box, the lower side is the Q1, the upper side is the Q3 and line in the middle is the median.
+
 
 %in \autoref{fig:dimeshift}, \autoref{fig:retroboard}, \autoref{fig:phoenix}, \autoref{fig:splittypie} and \autoref{fig:pagekit}  for each 
 
