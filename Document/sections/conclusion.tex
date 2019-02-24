@@ -1,21 +1,33 @@
 \chapter{Conclusion}\label{ch:conclusion}
-Starting from the evaluation, the method proposed has a better behaviour in terms of coverage and also number of test necessary.
-This can be caused by the great number of operation the Evosuite approach has to overcome, while this technique is ad-hoc for the purpose.\\
-%Still the number of test and application tested are not enough for a complete evaluation of the proposed solution.
-The evaluation is performed only on five application, and the constraints limit both programs, hence an higher number of Web-services or a different set of restriction can be defined to test new behaviours.\\
-Despite this, the results are very positive and give solid feedback on the project.
-Since now the algorithm proposed can afford the problem of the automatic test generation, providing an adequate test-suite as output.\\
-The technology used have a great impact on the performances, so a different approach on the instrumentation part could lead to different results.\\
-In case of line coverage the technology used can be overwhelming, while an ad-hoc parser could perform the same operation with cheaper time/computation effort.
-The library used is a kind of parser, indeed, and a major number of external dependencies can be expensive too.\\
-About the general instrumentation phase other techniques, like byte-code manipulation or other source-code handler, could make differences.\\
-Moreover, the printing phase require extra workload during the instantiation steps, and other solution can be adopted.
-The use of a complex structure can reduce some computational/memory costs for a giant number of instantiations per methods.
-Nonetheless, the complex structure has to be chosen wisely, or the benefit are no longer available.\\
-In conclusion, despite the limited tests, results are still impressive and the proposed algorithm seems to work correctly.
-As always, future work can be done to improve the performances and the efficiency on test generation phase.\\
+The proposed test case generator WRGen overall achieves a higher coverage than the random approach in Evosuite by generating and executing less tests. The reason can be searched on the readaptation of Evosuite for the web application testing scenario. However, a more in-depth analysis is needed to investigate what are the  operations that Evosuite performs with respect to WRGen that are not needed.
 
-So, in case you have questions, comments, suggestions or have found a bug, please do not hesitate to contact me. You can find my contact details below.
+%This can be caused by the great number of operation the Evosuite approach has to overcome, while this technique is ad-hoc for the purpose.\\
+
+%Still the number of test and application tested are not enough for a complete evaluation of the proposed solution.
+
+The evaluation is performed only on five web applications and with a low test generation timeout (1 minute) and this poses a generalization \textit{threat}. However, the applications selected span different domains and uses real world Javascript framework.
+
+To cope with randomness the test case generation was repeated 10 times for each application. Although the number of repetitions is not high, rigorous statistical tests were used to compare the competing test case generators. 
+
+%and the constraints limit both programs, hence an higher number of Web-services or a different set of restriction can be defined to test new behaviours.\\
+
+%Despite this, the results are very positive and give solid feedback on the project.
+%Since now the algorithm proposed can afford the problem of the automatic test generation, providing an adequate test-suite as output.\\
+
+%The technology used have a great impact on the performances, so a different approach on the instrumentation part could lead to different results. In case of line coverage the technology used can be overwhelming, while an ad-hoc parser could perform the same operation with cheaper time/computation effort. The library used is a kind of parser, indeed, and a major number of external dependencies can be expensive too. About the general instrumentation phase other techniques, like byte-code manipulation or other source-code handler, could make differences.
+
+%Moreover, the printing phase require extra workload during the instantiation steps, and other solution can be adopted.
+
+%The use of a complex structure can reduce some computational/memory costs for a giant number of instantiations per methods.
+%Nonetheless, the complex structure has to be chosen wisely, or the benefit are no longer available.\\
+%In conclusion, despite the limited tests, results are still impressive and the proposed algorithm seems to work correctly.
+
+As future work, a more detailed analysis will be performed by giving more time to the test generation phase to both tools. Moreover, experiments with a higher number of repetitions (30) will be carried out. The efficiency and the performance of WRGen will also be investigated and studied.
+
+%As always, future work can be done to improve the performances and the efficiency on test generation phase.\\
+
+In case you have questions, comments, suggestions or have found a bug, please do not hesitate to contact me. You can find my contact details below.
+
   \begin{center}
     Nicola Gilberti\\
     UniTN MSc student\\
