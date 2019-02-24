@@ -41,7 +41,7 @@ The test case generation phase ends when all the targets are covered or a timeou
 
 The final test suite is then created dynamically based on the coverage of each executed test cases.
 
-The problem of finding a minimal set of test cases that covers all the targets is NP-hard (\hl{https://en.wikipedia.org/wiki/Set\_cover\_problem}). WRGen uses a simple greedy heuristic (\autoref{lst:checkForFinalTestSuite}). The heuristic starts by adding to the final test suite the test case that covered more targets and then repeatedly adds the test case that covered the targets not covered by the test suite. If a test case covers the same target of another in the final test suite but it has less statements (smaller size), it is selected to be in the final test suite.
+The problem of finding a minimal set of test cases that covers all the targets is NP-hard \cite{Karp1972}. WRGen uses a simple greedy heuristic (\autoref{lst:checkForFinalTestSuite}). The heuristic starts by adding to the final test suite the test case that covered more targets and then repeatedly adds the test case that covered the targets not covered by the test suite. If a test case covers the same target of another in the final test suite but it has less statements (smaller size), it is selected to be in the final test suite.
 
 %If a test is the only one to cover a specific path, it is added to the test-suite.
 %This work also in case of empty suite.\\
@@ -50,29 +50,29 @@ The problem of finding a minimal set of test cases that covers all the targets i
 \begin{lstlisting}[caption={Check-test method},label={lst:checkForFinalTestSuite}]% Start your code-block
 
 private static void addToFinalTestCase(TestCase newTest) {
-  HashSet<Integer> tmp1 = newTest.getBranchCov();
+  HashSet<Integer> tmp1 = newTest.getCov();
   boolean flag=true;
   if(finalTests.isEmpty()) {
 	finalTests.add(newTest);
   }else {
 	for(int i=0;i<finalTests.size();i++) {
       TestCase oldTest = finalTests.get(i);
-	  if(sameValues(oldTest.getBranchCov(),newTest.getBranchCov())) {
+	  if(sameValues(oldTest.getCov(),newTest.getCov())) {
 		flag=false;
 		if(oldTest.getMethList().size()>newTest.getMethList().size()) {
 		  finalTests.set(i, newTest);
 		}
 		break;
 	  }else {
-		if(newTest.getBranchCov().containsAll(oldTest.getBranchCov())) {
+		if(newTest.getCov().containsAll(oldTest.getCov())) {
 		  finalTests.set(i, newTest);
 		  flag=false;
 		  break;
-		}else if(oldTest.getBranchCov().containsAll(newTest.getBranchCov())){
+		}else if(oldTest.getCov().containsAll(newTest.getCov())){
 		  flag=false;
 		  break;
 		}else {
-		  tmp1.removeAll(oldTest.getBranchCov());
+		  tmp1.removeAll(oldTest.getCov());
 		}
 	  }
 	}
@@ -108,7 +108,7 @@ public class Tester{
 	
 	@Test
 	//test case 2 coverage: 0.07906976744186046
-	//branch covered: [96, 161, 98, 163, 133, 201, 170, 171, 109, 206, 112, 49, 178, 88, 121, 122, 156]
+	//Line covered: [96, 161, 98, 163, 133, 201, 170, 171, 109, 206, 112, 49, 178, 88, 121, 122, 156]
 	public void test0(){
 		main.ClassUnderTest obj = new main.ClassUnderTest();
 		...

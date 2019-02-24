@@ -4,7 +4,9 @@ This chapter explains all the settings that are necessary for the project to run
 
 \section{Project Object Model}\label{sec:pom}
 
-The POM contains information about the project and various configuration details used by Maven to build the project. To compile classes, a specific \emph{JDK} library has to be imported as a dependency inside the project (\hl{If you mean the classes of the Java project where is located the class under test, they should be already compiled}).
+The POM contains information about the project and various configuration details used by Maven to build the project.
+To compile classes, a specific \emph{JDK} library has to be imported as a dependency inside the project.
+This compiler lib is necessary for the under test class to be available and executable at run-time after the code instrumentation.
 
 Because it depends on \emph{JDK} and so on the machine architecture, a \emph{<profile>} tag is necessary to identify all the possible options, to maintain the code machine independent.
 \begin{lstlisting}[language=XML,caption={Windows default profile for jdk lib},label={lst:winToolsJar}]% Start your code-block
@@ -24,8 +26,8 @@ Because it depends on \emph{JDK} and so on the machine architecture, a \emph{<pr
 
 There are specific paths for each OS type, and Maven accepts only specific \href{http://maven.apache.org/enforcer/enforcer-rules/requireOS.html}{\textit{OS families}}.
 
-(\hl{Overall, it is not clear why you need the tools.jar library}).
-The tag \textit{<toolsjar>} is an ad-hoc tag created to define a new property, in this case the path to the tools.jar library. In \autoref{lst:instToolsJar}, there are a few elements to consider. First, the \textit{phase} in which the installation of this library has to be performed that is, in this case, the \textit{install} phase. Second, the \textit{configuration} of the library (\hl{which one tools.jar?}) is based on the one (\hl{which library, JDK?}) installed on your machine, but in this case the \emph{JDK} library has no different option if the OS changes (\hl{so why is it important this configuration tag?}). \hl{The version is the value that the runner of the program \emph{MUST} verify}.
+The tag \textit{<toolsjar>} is an ad-hoc tag created to define a new property, in this case the path to the tools.jar library. In \autoref{lst:instToolsJar}, there are a few elements to consider. First, the \textit{phase} in which the installation of this library has to be performed that is, in this case, the \textit{install} phase. Second, the \textit{configuration} of tools.jar is based on the JDK installed on your machine. The whole plugin code in \autoref{lst:instToolsJar} is necessary to install in the Maven environment the libraries, in this case the one defined with the profile before.
+Differently from before, this part do not require a cross-platform extension, because the configuration element of JDK libs are common in all platforms. However, the version depends on the JDK installed, so it has to be updated accordingly.
 
 \begin{lstlisting}[language=XML,caption={How to 'mvn install' the tools.jar},label={lst:instToolsJar}]% Start your code-block
 
@@ -61,12 +63,12 @@ A .properties is a file extension for files used in Java programs to specify the
 	\item \textbf{FileName}: the \textit{complete} name (package names included) of the class under test, is required.	E.g.: FileName = com.main.ClassUnderTest;
 	\item \textbf{ProjectName}: the name of the java project that contains the class under test is required;
 	\item \textbf{PathToProjectDir}: the absolute path of the java project that contains the class under test;
-	\item \textbf{LineToCover}: colon separated list of numbers representing the lines to cover in the class under test. E.g.:LineToCover = 33:47:60:72:85:99:115:132:144:157 \hl{in the example Listing 2.10 you talk about branches, here about lines. Change the example above to be consistent.}
+	\item \textbf{LineToCover}: colon separated list of numbers representing the lines to cover in the class under test. E.g.:LineToCover = 33:47:60:72:85:99:115:132:144:157
 	\item \textbf{Separator}: in the LineToCover property the default separator is the colon, but a different one can be used which can be specified in this property;
 	\item \textbf{ExecutionTestTimer}: timeout in milliseconds for the test generation phase of WRGen;
 	\item \textbf{MaxNumberOfMethodXTest}: each test case has a random length. In this property the user specifies the maximum length of a test case;
 	\item \textbf{GraphName}: name of the web application graph ;
 	\item \textbf{GraphDirPath}: absolute path of the dot file containing the web application graph;
 	\item \textbf{StartNodeGraph}: name of the node in the web application graph modelling the home page of the web application under test;
-	\item \textbf{RequiredPath}: The program use reflection to execute the external project written in the first item, but it is not able to know all the dependencies it need. (\hl{is the classpath of the Java project containing the class under test?})
+	\item \textbf{RequiredPath}: The program use reflection to execute the external project written in the first item, but it is not able to know all the dependencies it need. Hence, here it is required the classpath of the Java project containing the class under test.
 \end{itemize}
