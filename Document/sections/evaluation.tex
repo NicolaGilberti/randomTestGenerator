@@ -1,13 +1,25 @@
 \chapter{Empirical evaluation} \label{ch:EmpEvaluation}
-This chapter focus on the evaluation of the proposed algorithm, making a comparison between this and the Evosuite method.
-The comparison is done executing 10 time both programs on the applications and analyzing the output in terms of coverage and number of test executed to define the final testsuite.
-The evaluation is performed by statistical tests.\\
-The distribution of the result cannot be assessed, caused by the random approach followed, so a t-test can't be performed.
-Furthermore the number of tests make useless the use of a t-test or similar parametric analysis.\\
-However, the \emph{Wilcoxon rank sum test}, also known as Mann–Whitney U test, avoid those limitations.
-It quantifies significant differences between the results, considering a significance level of $0.05$.\\
-To ensure the correctness of results, the analysis use also the \emph{Vargha and Delaney} statistic.
-This test emphasize the magnitude of the differences, given by the U test, between the two algorithms.
+This chapter focuses on the evaluation of WRGen, comparing it with the Evosuite random test generator on 5 web application subjects, namely \textit{Dimeshift}, \textit{Retroboard}, \textit{Pagekit}, \textit{Phoenix} and \textit{Splittypie}. (\hl{put the Github link for each of them}).
+
+Regarding the configuration of the two tools, both test generators were granted the same amount of generation time (1 minute). Moreover, the maximum length of a test case was set in both cases at 40.
+
+The comparison was done executing the test generators 10 times for each web application subject, in order to cope with the randomness of the test generation algorithms. The coverage the relative class under test was measured (line-coverage criterion) as well as the number of test cases generated and executed during the test generation phase. 
+
+The non-parametric \textit{Wilcoxon} statistical test was used considering a significance level of $0.05$, in order to compare WRGen and Evosuite in terms of coverage and number of test cases generated. The Wilcoxon test is used in this context to compare repeated measurements of the same metric (coverage or number of tests) to assess if the their medians differ. Moreover, the \emph{Vargha and Delaney} effect size was measured to asses the magnitude of the difference among the medians.
+
+%The evaluation is also executed limiting the number of methods callable for each unit test, \emph{@Test}, but letting the test suite to grow in number of unit test infinitely.
+%The execution time is also restricted, so the program has not to run endlessly and eventually halt when it is reached the total coverage.\\
+%Respectively, the maximum number of method is \emph{40} while the time is \emph{60 s}, and they are given as input with the properties file~\ref{sec:prop}.\\
+
+%The comparison is done executing 10 time both programs on the applications and analyzing the output in terms of coverage and number of test executed to define the final testsuite.
+%The evaluation is performed by statistical tests.\\
+%The distribution of the result cannot be assessed, caused by the random approach followed, so a t-test can't be performed.
+%Furthermore the number of tests make useless the use of a t-test or similar parametric analysis.\\
+%However, the \emph{Wilcoxon rank sum test}, also known as Mann–Whitney U test, avoid those limitations.
+%It quantifies significant differences between the results, considering a significance level of $0.05$.\\
+%To ensure the correctness of results, the analysis use also the \emph{Vargha and Delaney} statistic.
+%This test emphasize the magnitude of the differences, given by the U test, between the two algorithms.
+
 \begin{table}[H]
 	\centering
 	\caption{Evaluation of the application on web services}
@@ -68,31 +80,43 @@ This test emphasize the magnitude of the differences, given by the U test, betwe
 		\end{tabular}
 	\end{adjustbox}
 \end{table}
-The evaluation is also executed limiting the number of methods callable for each unit test, \emph{@Test}, but letting the test suite to grow in number of unit test infinitely.
-The execution time is also restricted, so the program has not to run endlessly and eventually halt when it is reached the total coverage.\\
-Respectively, the maximum number of method is \emph{40} while the time is \emph{60 s}, and they are given as input with the properties file~\ref{sec:prop}.\\
-The table \ref{table:res} show the results for each application under analysis.\\
-The results on the web applications, give us some interesting results about the algorithm.
-In all the coverage analysis, the algorithm presented has a greater performance compared to the counterpart.
-In fact, the p-value is below the agreed risk of 5 percent (0.05), so one significant difference can be assumed.\\
-The Vargha and Delaney value confirm each result, pointing the magnitude of the differences to \emph{large}, in favour of the Web Random Generator.
-The result, in case of number of tests, are slightly different than before.
+
+The \autoref{table:res} shows the results for each web application under analysis. Considering coverage WRGen outperforms Evosuite over all the application subjects. The \textit{p-value} is always lower than the significance level of 0.05 and the effect size statistics tells that the magnitude of the difference is always large.
+
+Considering the number of test cases generated and executed, WRGen significantly generates less tests than Evosuite in 3 out 5 application subjects. This means that not only WRGen covers more than Evosuite but also it achieves this result by generating and executing less tests.
+
+%The results on the web applications, give us some interesting results about the algorithm.
+%In all the coverage analysis, the algorithm presented has a greater performance compared to the counterpart.
+%In fact, the p-value is below the agreed risk of 5 percent (0.05), so one significant difference can be assumed.\\
+%The Vargha and Delaney value confirm each result, pointing the magnitude of the differences to \emph{large}, in favour of the Web Random Generator.
+%The result, in case of number of tests, are slightly different than before.
+
 \begin{figure}[H]
 	\centering
 	\input{sections/dimeshift.tex}
 	\input{sections/retroboard.tex}
 \end{figure}
 
-The first service, \emph{Dimeshift}, point out that the WRGen has an higher value, however the number of test in each test-suite is preferable to be as thin as possible.
-Thus, even if the WRGen has a capacity to cover better the Web-app, in this case it require also a greater test-suite to pursue the scope.\\
-We can check this results also with the box-plot representation \ref{fig:dimeshift}.
-For the coverage is simple to find how the WRGen has a greater variance, possible synonym of a correct random generation.
-The number of tests, also, show that Evosuite on average require fewer tests to pursue the goal.\\
-Nevertheless, the \emph{Retroboard} application results on the test analysis are quite different.
-The p-value is higher than the risk, so the Wilcoxom test tells us nothing.
-Moreover the A value see no differences on the result of the two under test programs.
-With the box-plot \ref{fig:retroboard}, in fact, we can see that the behaviour of the two algorithm is the same.\\
-Still, the WRGen is more performer, with a higher coverage compared to the same number of test executed.
+The boxplots below show, for each application the coverage value and the number of test cases generated for WRGen and Evosuite over the 10 repetitions. (\hl{explain what a boxplot is.})
+
+%in \autoref{fig:dimeshift}, \autoref{fig:retroboard}, \autoref{fig:phoenix}, \autoref{fig:splittypie} and \autoref{fig:pagekit}  for each 
+
+\autopageref{fig:dimeshift} shows the boxplots for \textit{Dimeshift}. WRGen achieves a higher value of coverage with respect to Evosuite. However, WRGen executes significantly more tests than Evosuite.
+
+\autopageref{fig:retroboard} shows the boxplots for \textit{Retroboard}. WRGen always achieves a higher value of coverage with respect to Evosuite but, in this case, by generating less tests. However, the difference regarding the number of tests is not statistically significant.
+
+%The boxplots for the \textit{Dimeshfit} application  The first service, \emph{Dimeshift}, point out that the WRGen has an higher value, however the number of test in each test-suite is preferable to be as thin as possible.
+%Thus, even if the WRGen has a capacity to cover better the Web-app, in this case it require also a greater test-suite to pursue the scope.\\
+%We can check this results also with the box-plot representation \ref{fig:dimeshift}.
+%For the coverage is simple to find how the WRGen has a greater variance, possible synonym of a correct random generation.
+%The number of tests, also, show that Evosuite on average require fewer tests to pursue the goal.\\
+
+%Nevertheless, the \emph{Retroboard} application results on the test analysis are quite different.
+%The p-value is higher than the risk, so the Wilcoxom test tells us nothing.
+%Moreover the A value see no differences on the result of the two under test programs.
+%With the box-plot \ref{fig:retroboard}, in fact, we can see that the behaviour of the two algorithm is the same.\\
+%Still, the WRGen is more performer, with a higher coverage compared to the same number of test executed.
+
 \begin{figure}[H]
 	\centering
 	\input{sections/phoenix.tex}
@@ -102,9 +126,12 @@ Still, the WRGen is more performer, with a higher coverage compared to the same 
 	\centering
 	\input{sections/pagekit.tex}
 \end{figure}
-With these last three services, the results are similar.\\
-As defined before, The U test accordingly with the A value tell that the test-suite created by the WRGen has a higher coverage in respect of the counterpart.\\
-Additionally, the Vargha and Delaney method on the number of tests define that the Evosuite approach leads to generate a higher number of test.
-However, the higher number of possible final tests do not help the algorithm to find out a better test-suite.
-As before, the results are easily checkable with the graphical representation.
+
+\autoref{fig:phoenix}, \autoref{fig:splittypie} and \autoref{fig:pagekit} show the boxplots for \textit{Phoenix}, \textit{Splittypie} and \textit{Pagekit} respectively. In those subjects WRGen achieves a significantly higher coverage than Evosuite by generating significantly less test cases. The higher number of tests generated and executed by Evosuite are not useful to achieve a high coverage value, with respect to WRGen.
+
+%With these last three services, the results are similar.\\
+%As defined before, The U test accordingly with the A value tell that the test-suite created by the WRGen has a higher coverage in respect of the counterpart.\\
+%Additionally, the Vargha and Delaney method on the number of tests define that the Evosuite approach leads to generate a higher number of test.
+%However, the higher number of possible final tests do not help the algorithm to find out a better test-suite.
+%As before, the results are easily checkable with the graphical representation.
 \newpage
