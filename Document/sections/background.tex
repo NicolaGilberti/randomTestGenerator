@@ -1,5 +1,5 @@
 \chapter{Background}\label{ch:background}
-The project is developed in Java~\cite{Arnold:2000:JPL:556709} and is based on basic Java programming technologies such as, a Java compiler (Javac~\cite{javacWiki}), Reflection~\cite{reflect}, to dynamically analyze classes at runtime, and Maven~\cite{bharathan2015apache}, to manage dependencies and for the cross-platform compatibility.
+The project is developed in Java~\cite{Arnold:2000:JPL:556709} and is based on basic Java programming technologies such as, a Java compiler (Javac~\cite{javacWiki}), Reflection~\cite{reflect} (used to dynamically analyze classes at runtime) and Maven~\cite{bharathan2015apache} (to manage Java dependencies and for the cross-platform compatibility).
 
 In addition to those elements, a Java parser, called Spoon, is used. Next section introduces Spoon and its application in this project.
 
@@ -10,20 +10,15 @@ Spoon takes advantage of the Java Reflection~\cite{reflect} feature to build the
 
 %Moreover, it implements a native method to integrate and process Java annotation~\cite{annotation}, to embed metadata into the code.
 
-Regarding the code that a programmer can insert, Spoon gives different options to check its compliance with the Java grammar.
-
-%\hl{The first option leverages generics to manipulate the AST that give to the programmer a feedback in case of bad code}. 
-The first option leverage on Generics.
-Generics allows for the well-typing of Spoon programs, providing static checks, completion, documentation, navigation, and so allowing to define a pure Java template mechanism, which it is used to define straightforward code.
-Therefore, with this technique, it is easier to manipulate the AST, giving feedback to the programmer in case of bad code.
-Another option that Spoon implements is the template engine with static checks that let the programmer insert code automatically ensuring that it is well formed.
+Regarding the code that a programmer can insert, Spoon gives different options to check its compliance with the Java grammar. The first option leverages on Generics.
+Generics allows for the well-typing of Java programs, providing static checks, completion, documentation, navigation, allowing to define a pure Java template mechanism, which is used to define straightforward code. Therefore, with this technique, it is easier to manipulate the AST, giving feedback to the programmer in case of bad code. Another option that Spoon implements is the template engine with static checks that let the programmer insert code automatically ensuring that it is well formed.
 
 %In case of those technique are not used, you can still check the well-formedness analyzing the stack trace error at compile time.
 
 \subsection*{How it works}\label{subsec:howSpoon}
-Spoon works primarily on the AST, giving the possibility to manipulate Java code elements. The \emph{Processor} and the \emph{Factory} classes are the key-components to use to analyze and transform the code. The Processor lets the programmer analyze the AST, while the Factory permits to modify the AST, adding and/or removing elements from the syntax tree. The concept is similar to the read and write operations, where the first operation (Processor) is read-only while the second (Factory) can also write.
+Spoon works primarily on the AST, giving the possibility to manipulate Java code elements. The \emph{Processor} and the \emph{Factory} classes are the key-components used to analyze and transform the code. The Processor lets the programmer analyze the AST, while the Factory permits to modify it, adding and/or removing elements from the syntax tree. The concept is similar to the read and write operations, where the first operation (Processor) is read-only while the second (Factory) can also write.
 
-In particular, the Processor class is utilised for querying Java code elements. That operation is possible thanks to the visit pattern applied to the Spoon model (AST). All the code elements have an \emph{Accept} method, therefore each element can be visited by a visitor object. For instance, in \autoref{lst:ProcessorExample}, a Processor is used to search for an empty catch block. As the code shows, the Processor works on a \textit{CtCatch}, which is the Compile Time Catch given by the Spoon Metamodel, and checks for statements inside the CtCatch body.
+In particular, the Processor class is utilised for querying Java code elements. That operation is possible thanks to the visit pattern applied to the Spoon model (AST). All the code elements have an \emph{Accept} method, therefore each element can be visited by a visitor object. For instance, in \autoref{lst:ProcessorExample}, a Processor is used to search for an empty catch block. As the code shows, the Processor works on a \textit{CtCatch}, which is the Compile Time Catch given by the Spoon model, and checks for statements inside the CtCatch body.
 
 \begin{lstlisting}[caption={Processor example taken from \href{http://spoon.gforge.inria.fr/processor.html}{Spoon documentation}},label={lst:ProcessorExample}]% Start your code-block
 
@@ -36,7 +31,7 @@ public class CatchProcessor extends AbstractProcessor<CtCatch> {
 }
 \end{lstlisting}
 
-The Factory class gives the coder the ability to create new elements, and add them to the Syntax Tree under analysis. There is more than one Factory class, where each one is specialized to facilitate the creation of specific code elements.
+The Factory class gives the coder the ability to create new elements, and add them to the syntax tree. There is more than one Factory class, where each one is specialized to facilitate the creation of specific code elements.
 
 \begin{lstlisting}[caption={Factory example taken from \href{https://www.programcreek.com/java-api-examples/index.php?api=spoon.reflect.factory.Factory}{Spoon Projects}},label={lst:FactoryExample}]% Start your code-block
 

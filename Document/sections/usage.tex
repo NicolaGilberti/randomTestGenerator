@@ -5,10 +5,12 @@ This chapter explains all the settings that are necessary for the project to run
 \section{Project Object Model}\label{sec:pom}
 
 The POM contains information about the project and various configuration details used by Maven to build the project.
-To compile classes, a specific \emph{JDK} library has to be imported as a dependency inside the project.
-This compiler lib is necessary for the under test class to be available and executable at run-time after the code instrumentation.
 
-Because it depends on \emph{JDK} and so on the machine architecture, a \emph{<profile>} tag is necessary to identify all the possible options, to maintain the code machine independent.
+In order to compile the instrumented class under test, a specific \emph{JDK} library has to be imported as a dependency inside the project. 
+%This compiler lib is necessary for the under test class to be available and executable at run-time after the code instrumentation.
+
+Since this library depends on the \emph{JDK} and therefore on the machine architecture, a \emph{<profile>} tag is necessary to specify the path to this library for different operating systems, in order to maintain the code machine independent.
+
 \begin{lstlisting}[language=XML,caption={Windows default profile for jdk lib},label={lst:winToolsJar}]% Start your code-block
 
 <profile>
@@ -24,10 +26,9 @@ Because it depends on \emph{JDK} and so on the machine architecture, a \emph{<pr
 </profile>
 \end{lstlisting}
 
-There are specific paths for each OS type, and Maven accepts only specific \href{http://maven.apache.org/enforcer/enforcer-rules/requireOS.html}{\textit{OS families}}.
+Indeed, there are specific paths for each OS type, and Maven accepts only specific \href{http://maven.apache.org/enforcer/enforcer-rules/requireOS.html}{\textit{OS families}}.
 
-The tag \textit{<toolsjar>} is an ad-hoc tag created to define a new property, in this case the path to the tools.jar library. In \autoref{lst:instToolsJar}, there are a few elements to consider. First, the \textit{phase} in which the installation of this library has to be performed that is, in this case, the \textit{install} phase. Second, the \textit{configuration} of tools.jar is based on the JDK installed on your machine. The whole plugin code in \autoref{lst:instToolsJar} is necessary to install in the Maven environment the libraries, in this case the one defined with the profile before.
-Differently from before, this part do not require a cross-platform extension, because the configuration element of JDK libs are common in all platforms. However, the version depends on the JDK installed, so it has to be updated accordingly.
+The tag \textit{<toolsjar>} is an ad-hoc tag created to define a new property, in this case the path to the tools.jar library. In \autoref{lst:instToolsJar}, there are a few elements to consider. First, the maven \textit{phase} in which the installation of this library has to be performed that is, in this case, the \textit{install} phase. Second, the \textit{configuration} of tools.jar is based on the JDK installed on the system. The  plugin tag in \autoref{lst:instToolsJar} is necessary to install libraries in the maven local repository, in this case the one defined with the profile above (\autoref{lst:winToolsJar}). Differently from above, this part does not require a cross-platform extension, because the elements in the configuration tag are the same for all operating systems. However, the version depends on the JDK installed, so it has to be updated accordingly.
 
 \begin{lstlisting}[language=XML,caption={How to 'mvn install' the tools.jar},label={lst:instToolsJar}]% Start your code-block
 
@@ -70,5 +71,5 @@ A .properties is a file extension for files used in Java programs to specify the
 	\item \textbf{GraphName}: name of the web application graph ;
 	\item \textbf{GraphDirPath}: absolute path of the dot file containing the web application graph;
 	\item \textbf{StartNodeGraph}: name of the node in the web application graph modelling the home page of the web application under test;
-	\item \textbf{RequiredPath}: The program use reflection to execute the external project written in the first item, but it is not able to know all the dependencies it need. Hence, here it is required the classpath of the Java project containing the class under test.
+	\item \textbf{RequiredPath}: The program uses reflection to execute the class under test. Hence, here it is required the classpath of the Java project containing the class under test.
 \end{itemize}

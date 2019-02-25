@@ -3,7 +3,7 @@
 
 The test generator takes as input a graph representing the class under test. The graph is a directed graph in which nodes model the states of the web application under test and edges are methods of the class under test that represent transitions, namely actions that lead the web application from one state to another.
 
-\hl{explain with figure how the graph looks like (lo aggiungo io)}
+%\hl{explain with figure how the graph looks like (lo aggiungo io)}
 
 %Given all the proper data collected by the main thread, see~\ref{sec:MSArch} and~\ref{ch:usage}, the second thread recreate a possible correct sequence of action that can be performed on the class.
 %This operation is executed before the creation of each test.\\
@@ -17,18 +17,20 @@ The test generator takes as input a graph representing the class under test. The
 
 \subsection{Test Case Creation}\label{subsec:creation}
 
-The test generator generates random paths from the given graph representing the sequence of actions (methods of the class under test) to be performed on the web application upon execution. In order to do that, it performs a \textit{random walk} in the graph given a starting node, representing the home page of the web application under test, the maximum length of the path and the \textit{selected} edge that determines the stopping criterion for the random walk. The selected edge is the method of the class under test that needs to be contained in the generated sequence. If the random walk does not traverse the selected edge but it terminates because the maximum path length is reached, the test generator computes the shortest path from the last node of the path produced by the random walk to the target node of the selected edge.
+The test generator generates random paths from the given graph representing the sequence of actions (methods of the class under test) to be performed on the web application upon execution. In order to do that, it performs a \textit{random walk} on the graph. Given a graph and a starting point, a neighbor of it is selected at random, and the walk moves to this neighbor; then a neighbor of this point is selected at random, and the walk moves to it etc. The (random) sequence of points selected this way is a random walk on the graph~\cite{survey-random-walks}.
 
-The selected edge is determined by looping through the list all methods of the class under test. In fact, each method has a unique target that needs to be covered upon execution. Therefore, the test generator, at each step of the test generation, tries to generate a sequence in order that the selected method can be executed properly. If the selected method is then covered upon execution, it is removed from the list.
+The random walk on the graph takes as input a starting node, representing the home page of the web application under test, the maximum length of the path and the \textit{selected} edge that determines the stopping criterion for the random walk. The selected edge is the method of the class under test that needs to be contained in the generated sequence. If the random walk does not traverse the selected edge but it terminates because the maximum path length is reached, the test generator computes the shortest path from the last node of the path produced by the random walk to the target node of the selected edge.
 
-The method sequence generated with the random walk is \textit{abstract}, meaning that it cannot be executed directly since no input values are specified. The input generator (~\autoref{sec:pig}) takes care of generating the proper input values for each method in the sequence. Once the inputs are generated, the method sequence is an actual test case that can be executed.
+The selected edge is determined by looping through the list of all methods of the class under test. In fact, each method has a unique target that needs to be covered upon execution. Therefore, the test generator, at each step of the test generation, tries to generate a sequence in order that the selected method can be executed properly. If the selected method is then covered upon execution, it is removed from the list.
+
+The method sequence generated with the random walk is \textit{abstract}, meaning that it cannot be executed directly since no input values are specified. The input generator (~\autoref{sec:pig} ) takes care of generating the proper input values for each method in the sequence. Once the inputs are generated, the method sequence is an actual test case that can be executed.
 
 %Till now there is a list of methods and for each of them there is a possible input.
 
 %Here can be done extra controls on the list and on their input to reject or accept the list as a possible test case.
 
 %After that an instance of the instrumented class is generated and the method's list is executed in order.\\
-The test generator instantiates the instrumented class and the methods in the sequence are executed in order. All the targets that are covered upon the test case execution are saved. 
+The test generator instantiates the instrumented class and the methods in the generated test case are executed in order. All the targets that are covered upon the test case execution are saved. 
 
 The test case generation phase ends when all the targets are covered or a timeout is reached. 
 %When an error is thrown, the data is collected and saved for the next step~\ref{subsec:prettyprinting}.
@@ -100,7 +102,7 @@ factory.getEnvironment().setAutoImports(true);
 
 %The same auto-generated import list is then recovered and used in the printing part.
 %After that, a \emph{Tester} class is generated and the real tests are written inside.
-Then the test suite class is created.  Each test case starts with a common pattern that is as following. First, the JUnit annotation used to identify tests, namely \textit{@Test}.
+Then the test suite class is created.  Each test case starts with a common pattern that is as follows. First, the JUnit annotation used to identify tests, namely \textit{@Test}.
 As second element, a comment that gives information about the coverage of the test. More specifically the total coverage of the test, as percentage, and a list of identifiers that represent the lines (or branches) of the class under test covered. The third element is the method declaration with the name of the test, followed by the instantiation of the class under test.
 
 \begin{lstlisting}[caption={Example test case, first part},label={lst:testCAseFirstPart}]% Start your code-block
@@ -109,7 +111,7 @@ public class Tester{
 	
 	@Test
 	//test case 2 coverage: 0.07906976744186046
-	//Line covered: [96, 161, 98, 163, 133, 201, 170, 171, 109, 206, 112, 49, 178, 88, 121, 122, 156]
+	//Lines covered: [96, 161, 98, 163, 133, 201, 170, 171, 109, 206, 112, 49, 178, 88, 121, 122, 156]
 	public void test0(){
 		main.ClassUnderTest obj = new main.ClassUnderTest();
 		...
@@ -134,6 +136,6 @@ try{
 Each test also differs for the method sequence and the execution outputs. The test suite printer is able to manage all the input variable assignments and it also creates try-catch blocks in methods which thrown exceptions upon execution.
 
 \autoref{lst:printMethodComplex} shows %how cases similar to the example at the end of~\ref{sec:pig} are managed.\\
-how the method \textit{editFeedWidgetDashboardContainerPage} of the class under test for the application \textit{Pagekit} is called. Tabulation is used to define the depth level of the variables. For example at line~1 there is a \textit{2-Tab} variable meaning that it this is required for a \textit{1-Tab} variable assignment, which is in line~2. All the 1-Tab depth variables are the input for the method of the class under test in line~9. Upon execution, this method throws a \textit{NotInTheRightPageObjectException}, therefore, it is inside a try-catch block. Moreover, the int variable at line~5 is assigned the value of another variable of the same type previously generated (\textit{var120}). 
+how the method \textit{editFeedWidgetDashboardContainerPage} of the class under test for the application \textit{Pagekit} is called. Tabulation is used to define the depth level of the variables. For example at line~1 there is a \textit{2-Tab} variable, meaning that it this is required for a \textit{1-Tab} variable assignment, which is in line~2. All the 1-Tab depth variables are the input for the method of the class under test in line~9. Upon execution, this method throws a \textit{NotInTheRightPageObjectException}, therefore, it is inside a try-catch block. Moreover, the int variable at line~5 is assigned the value of another variable of the same type previously generated (\textit{var120}). 
 
 Each test case ends with an assertion, that checks that all the targets covered during the test case generation by that test, are also covered when the same test is executed within the final test suite. This can be done by instantiating the instrumented class under test in the final test suite.

@@ -3,7 +3,7 @@ This chapter focuses on the evaluation of WRGen, comparing it with the Evosuite 
 
 Regarding the configuration of the two tools, both test generators were granted the same amount of generation time (1 minute). Moreover, the maximum length of a test case was set in both cases at 40.
 
-The comparison was done executing the test generators 10 times for each web application subject, in order to cope with the randomness of the test generation algorithms. The coverage the relative class under test was measured (line-coverage criterion) as well as the number of test cases generated and executed during the test generation phase. 
+The comparison was done executing the test generators 10 times for each web application subject, in order to cope with the randomness of the test generation algorithms. The coverage of the relative class under test was measured (line-coverage criterion) as well as the number of test cases generated and executed during the test generation phase. 
 
 %The non-parametric \textit{Wilcoxon} statistical test was used considering a significance level of $0.05$, in order to compare WRGen and Evosuite in terms of coverage and number of test cases generated. The Wilcoxon test is used in this context to compare repeated measurements of the same metric (coverage or number of tests) to assess if the their medians differ. Moreover, the \emph{Vargha and Delaney} effect size was measured to asses the magnitude of the difference among the medians.
 
@@ -93,28 +93,24 @@ Considering the number of test cases generated and executed, WRGen significantly
 %The Vargha and Delaney value confirm each result, pointing the magnitude of the differences to \emph{large}, in favour of the Web Random Generator.
 %The result, in case of number of tests, are slightly different than before.
 
+The box-plots below show, for each application the coverage value and the number of test cases generated for WRGen and Evosuite over the 10 repetitions. 
+
+Box-plots are a standardized way of displaying non parametric distribution of data based on minimum, first quartile (Q1), median (second quartile), third quartile (Q3), and maximum. Quartile is a special case of quantiles and they are the three point that divide the distribution values into 4 equal-sized groups. Moreover, this graphical representation allows to examine/compare quickly more than one dataset, telling for each plot the spread and skewness of the data. In those representations, following the vertical axis, the lower whiskers is the minimum value of the distribution, while the upper is the maximum. About the box, the lower side is the Q1, the upper side is the Q3 and line in the middle is the median.
+
 \begin{figure}[H]
 	\centering
 	\input{sections/dimeshift.tex}
 	\input{sections/retroboard.tex}
 \end{figure}
 
-The box-plots below show, for each application the coverage value and the number of test cases generated for WRGen and Evosuite over the 10 repetitions. 
-
 %(\hl{explain what a boxplot is.})
-Box-plots are a standardized way of displaying the distribution of data based on a five number summary: minimum, first quartile (Q1), median (second quartile), third quartile(Q3), and maximum.
-Quartile is a special case of quantiles and they are the three point that divide the distribution values into 4 equal-sized groups.
-Thanks to that, box-plots are useful for the presentation of non parametric distribution, like in this scenario.
-Moreover, this graphical technique allow to examine/compare quickly more than one dataset, telling for each plot the spread and skewness of the data.
-In those representations, following the vertical axis, the lower whiskers is the minimum value of the distribution, while the upper is the maximum.
-About the box, the lower side is the Q1, the upper side is the Q3 and line in the middle is the median.
 
 
 %in \autoref{fig:dimeshift}, \autoref{fig:retroboard}, \autoref{fig:phoenix}, \autoref{fig:splittypie} and \autoref{fig:pagekit}  for each 
 
-\autopageref{fig:dimeshift} shows the boxplots for \textit{Dimeshift}. WRGen achieves a higher value of coverage with respect to Evosuite. However, WRGen executes significantly more tests than Evosuite.
+\autoref{fig:dimeshift} shows the boxplots for \textit{Dimeshift}. WRGen achieves a higher value of coverage with respect to Evosuite. However, WRGen executes significantly more tests than Evosuite.
 
-\autopageref{fig:retroboard} shows the boxplots for \textit{Retroboard}. WRGen always achieves a higher value of coverage with respect to Evosuite but, in this case, by generating less tests. However, the difference regarding the number of tests is not statistically significant.
+\autoref{fig:retroboard} shows the boxplots for \textit{Retroboard}. WRGen always achieves a higher value of coverage with respect to Evosuite but, in this case, by generating less tests. However, the difference regarding the number of tests is not statistically significant.
 
 %The boxplots for the \textit{Dimeshfit} application  The first service, \emph{Dimeshift}, point out that the WRGen has an higher value, however the number of test in each test-suite is preferable to be as thin as possible.
 %Thus, even if the WRGen has a capacity to cover better the Web-app, in this case it require also a greater test-suite to pursue the scope.\\
